@@ -1,0 +1,163 @@
+<p>
+	安卓的数据储存有五种方式，这五种方式之间没有优劣，在不通需求中用不通的方式来完成功能就可以了
+</p>
+<p>
+	<span style="font-size:16px;">1.文件储存：</span> 
+</p>
+<p>
+	文件储存就是直接要保存的数据写入文件，这种储存方式是常见的方式（储存也分为内部存储，外部存储sd卡）
+</p>
+<p>
+	<span style="font-size:16px;">2.sharepreferences 对象储存：</span> 
+</p>
+<p>
+	SharedPreferences储存也比较常用，保存为xml格式，一般用于存储配置信息
+</p>
+<p>
+	<span style="font-size:16px;">3.SQLite数据库：</span> 
+</p>
+<p>
+	sqlite是安卓自带的轻量级数据库，操作和sql数据库一样，只是安卓自带了很多操作接口
+</p>
+<p>
+	<span style="font-size:16px;">4.ContentProvider：</span> 
+</p>
+<p>
+	安卓四大组件之一，也可用于数据存储
+</p>
+<p>
+	<br />
+</p>
+<hr style="page-break-after:always;" class="ke-pagebreak" />
+<p>
+	<br />
+</p>
+<p>
+	下面介绍SharedPreferences用法
+</p>
+<div id="mainContent" style="margin:0px -250px 0px 0px;padding:0px;border:0px solid green;font-family:Verdana, Arial, Helvetica, sans-serif;">
+	<div class="forFlow" style="margin:0px 250px 0px 0px;padding:35px 0px 15px;background:url(;">
+		<div id="post_detail" style="margin:0px;padding:0px;">
+			<div id="topics" style="margin:auto;padding:0px 0px 10px;">
+				<div class="post" style="margin:0px;padding:0px;">
+					<div class="postBody" style="margin:5px 0px 0px;padding:5px 2px 5px 5px;font-size:13px;">
+						<p>
+							<p>
+								之前做应用时碰到这样一个问题：在“A” Activity 要与 “B” Activity的Fragment进行通信传值，但是忽然发现无法拿到B中Fragment的Handler，又不能发送广播，短暂的思考之后想到了SharedPreferences这个轻型的数据存储方式。
+							</p>
+							<p>
+								&emsp;&emsp;SharedPreferences的本质是基于XML文件存储key-value键值对数据，通常用来存储一些简单的配置信息，用Sqlite数据库来存放并不划算，因为数据库连接跟操作等耗时大大影响了程序的效率。其存储位置在/data/data/&lt;包名&gt;/shared_prefs目录下。
+							</p>
+							<p>
+								&emsp;&emsp;另外SharedPreferences只能保存简单类型的数据，例如，String、int等。一般会将复杂类型的数据转换成Base64编码，然后将转换后的数据以字符串的形式保存在 XML文件中，再用SharedPreferences保存。
+							</p>
+							<p>
+								&emsp;&emsp;<span style="line-height:1.5;color:#FF0000;">使用SharedPreferences保存key-value对的步骤如下：</span> 
+							</p>
+							<p>
+								&emsp;&emsp;<span style="line-height:1.5;color:#FF0000;">（1）使用Activity类的getSharedPreferences方法获得SharedPreferences对象，其中存储key-value的文件的名称由getSharedPreferences方法的第一个参数指定，第二个参数指定访问应用程序私有文件的权限。</span> 
+							</p>
+							<p>
+								<span style="line-height:1.5;color:#FF0000;">&emsp;&emsp;（2）使用SharedPreferences接口的edit获得SharedPreferences.Editor对象。</span> 
+							</p>
+							<p>
+								<span style="line-height:1.5;color:#FF0000;">&emsp;&emsp;（3）通过SharedPreferences.Editor接口的putXxx方法保存key-value对。其中Xxx表示不同的数据类型。例如：字符串类型的value需要用putString方法。</span> 
+							</p>
+							<p>
+								<span style="line-height:1.5;color:#FF0000;">&emsp;&emsp;（4）通过SharedPreferences.Editor接口的commit方法保存key-value对。commit方法相当于数据库事务中的提交（commit）操作。</span> 
+							</p>
+							<p>
+								<br />
+							</p>
+							<p style="text-align:center;">
+								<span style="line-height:1.5;color:#FF0000;"><span style="line-height:1.5;color:#000000;"><span style="line-height:1.5;font-size:14pt;">存放数据信息，步骤如下：</span></span></span> 
+							</p>
+							<p>
+								&emsp;&emsp;a、打开Preferences，名称为setting，如果存在则打开它，否则创建新的Preferences
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									SharedPreferences userSettings = getSharedPreferences("setting", 0);
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;b、让setting处于编辑状态
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									SharedPreferences.Editor editor = userSettings.edit();
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;c、存放数据
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									editor.putString("name","ATAAW");<br />
+editor.putString("URL","ATAAW.COM");
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;d、完成提交
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									editor.commit();<span style="line-height:1.5;font-size:14pt;"></span>
+								</p>
+								<p style="text-align:center;color:#000000;">
+									<span style="line-height:1.5;font-size:14pt;">读取</span><span style="line-height:1.5;color:#FF0000;"><span style="line-height:1.5;color:#000000;"><span style="line-height:1.5;font-size:14pt;">数据信息，步骤如下：</span></span></span>
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;a、获取Preferences
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									SharedPreferences userSettings= getSharedPreferences("setting", 0);
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;b、取出数据
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									String name = userSettings.getString("name","默认值");<br />
+String url = userSettings.getString("URL","default");
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;以上就是Android中SharedPreferences的具体使用方法。
+							</p>
+							<p>
+								&emsp;&emsp;<span style="line-height:1.5;color:#FF0000;">注意：只顾着说存取的方法了，补充一点哈，那就是删除和清空操作，如下：</span> 
+							</p>
+							<p>
+								&emsp;&emsp;a、清除指定数据
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									SharedPreferences.Editor editor = userSettings.edit();<br />
+editor.remove("KEY");<br />
+editor.commit();
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;b、清空数据
+							</p>
+							<blockquote style="background:none;color:#333333;">
+								<p style="color:#000000;">
+									SharedPreferences.Editor editor = userSettings.edit();<br />
+editor.clear();<br />
+editor.commit();
+								</p>
+							</blockquote>
+							<p>
+								&emsp;&emsp;<span style="line-height:1.5;color:#FF0000;">注意：如果在 Fragment 中使用SharedPreferences 时，需要放在onAttach(Activity activity)里面进行<span style="line-height:1.5;">SharedPreferences </span>的初始化，否则会报空指针 即 getActivity()会可能返回null ！</span> 
+							</p>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,49 @@
+Debian可以安装
+
+httpd
+mysql-server
+yum
+python3
+php5-mysql 驱动
+用一下命令搜索可以获得php5的帮助
+apt-cache search php5
+
+
+
+
+
+Unable to set password for the MySQL "root" user                                                           x
+x                                                                                                            x
+x An error occurred while setting the password for the MySQL administrative user. This may have happened     x
+x because the account already has a password, or because of a communication problem with the MySQL           x
+x server.                                                                                                    x
+x                                                                                                            x
+x You should check the account's password after the package installation.                                    x
+x                                                                                                            x
+x Please read the /usr/share/doc/mysql-server-5.5/README.Debian file for more information.       
+
+
+
+1.vim /etc/rc.local 编辑这个文件,加上这两句话,wlan对应自己的下标
+insmod /lib/modules/3.4.39_zero/xradio_wlan.ko
+ifconfig wlan* up
+2.vim /etc/network/interfaces  行末加上这四句,名字密码没有双引号
+auto wlan*
+iface wlan* inet dhcp
+wpa-ssid 热点名字
+wpa-psk 热点密码
+
+如果不能连接上wifi,再用如下方法,上面的操作不用删除:
+3.vim /etc/network/wpa_supplication.conf  编辑文件,名字密码有双引号
+network={
+        ssid="wifi 热点名字"
+        psk="wifi 热点密码"
+        priority=1
+   }
+4.连接wifi,命令行输入
+ifconfig wlan* up
+sudo wpa_supplicant -i wlan* -c /etc/network/wpa_supplication.conf &     (dmesg | tail 应该能看到wlan* becomes ready)
+dhcpcd wlan* &
+5.ifconfig看是否连接上网络
+
+

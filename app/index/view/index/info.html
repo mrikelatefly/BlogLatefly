@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{$article.title}</title>
+  <meta name="keywords" content="{$article.title}" />
+  <meta name="description" content="{$article.summary}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="shortcut icon" href="__IMG__/latefly logo.png">
+  
+  <link href="__CSS__/base.css" rel="stylesheet">
+  
+  <script src="__JS__/jquery.min.js" type="text/javascript"></script>
+  <script src="__JS__/comm.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+  <script src="js/modernizr.js"></script>
+  <![endif]-->
+  <script src="__JS__/scrollReveal.js"></script>
+  <style>
+    .container{
+      width: 100%;
+    }
+    .commentbox{
+      width:90%;
+      margin: 20px auto;
+    }
+    .mytextarea {
+        width: 90%;
+        overflow: auto;
+        word-break: break-all;
+        height: 100px;
+        color: #000;
+        font-size: 1em;
+        resize: none;
+    }
+    .comment-list{
+      width: 100%;
+      margin: 20px auto;
+      clear: both;
+      padding-top: 20px;
+    }
+    .comment-list .comment-info{
+      position: relative;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+    .comment-list .comment-info header{
+      width: 10%;
+      position: absolute;
+    }
+    .comment-list .comment-info header img{
+      width: 90%;
+      border-radius: 50%;
+      padding: 5px;
+    }
+    .comment-list .comment-info .comment-right{
+      padding:5px 0px 5px 11%; 
+    }
+    .comment-list .comment-info .comment-right h3{
+      margin: 5px 0px;
+    }
+    .comment-list .comment-info .comment-right .comment-content-header{
+      height: 25px;
+    }
+    .comment-list .comment-info .comment-right .comment-content-header span,.comment-list .comment-info .comment-right .comment-content-footer span{
+      padding-right: 2em;
+      color: #aaa;
+    }
+    .comment-list .comment-info .comment-right .comment-content-header span,.comment-list .comment-info .comment-right .comment-content-footer span.reply-btn,.send,.reply-list-btn{
+      cursor: pointer;
+    }
+    .comment-list .comment-info .comment-right .reply-list {
+      border-left: 3px solid #ccc;
+      padding-left: 7px;
+    }
+    .comment-list .comment-info .comment-right .reply-list .reply{
+      border-bottom: 1px dashed #ccc;
+    }
+    .comment-list .comment-info .comment-right .reply-list .reply div span{
+      padding-left: 10px;
+    }
+    .comment-list .comment-info .comment-right .reply-list .reply p span{
+      padding-right: 2em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+<header>
+
+<!---头像以及联系方式-->
+{include file='index/common/header'/}
+<!----导航栏----->
+{include file='index/common/navigate'/}
+</header>
+<article>
+  <main class="r_box">
+    <div class="newsview">
+      <h3 class="news_title">{$article.title}</h3>
+      <div class="bloginfo">
+        <ul>
+          <li class="author">作者：<a href="/">{$article.from_user}</a></li>
+          <li class="lmname"><a href="/">
+            {volist name="selectType" id="type"}{if condition="$type.type2 eq $article.type "}
+            {if condition="$type.value2 neq '0' "}
+              {$type.value2}
+            {/if}{/if}{/volist}
+          </a></li>
+          <li class="timer">时间：{$article.release_time|backDate}</li>
+          <li class="view">{$article.views}人已阅读</li>
+        </ul>
+      </div>
+      <div class="tags">
+        <a href="#">
+            {volist name="selectType" id="type"}{if condition="$type.type2 eq $article.type "}
+            {if condition="$type.value2 neq '0' "}
+              {$type.value2}
+            {/if}{/if}{/volist}
+        </a></div>
+        <!-- <a href="#" target="_blank">小世界</a></div> -->
+      <div class="news_about">
+        <strong>简介</strong>
+        {$article.summary}
+      </div>
+      <div class="news_con">
+       {$article.content}
+      </div>
+      <div class="tags_comments">
+        <a onClick="vote('uhate',{$article.id},this)" class='uhate'>&nbsp;&nbsp;&nbsp;&nbsp;就这样啦({$article.uhate})&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a onClick="vote('ulove',{$article.id},this)" class='ulove'>&nbsp;&nbsp;&nbsp;&nbsp;还不错哟({$article.ulove})&nbsp;&nbsp;&nbsp;&nbsp;</a>
+      </div>
+      
+      <div class="nextinfo">
+         
+      </div>
+      <div class="news_pl">
+        <h2>文章评论</h2>
+        <div class="gbko"> </div>
+
+        <div class="container">
+        {if condition="$article.comment_permission eq '1'"}
+            <!-- <div class="commentbox">
+              <textarea cols="80" rows="50" placeholder="来说几句吧......" class="mytextarea" id="content"></textarea>
+              <div class="btn btn-info pull-right" id="comment">评论</div>
+            </div>
+            <div class="comment-list">
+              <div class="comment-info">
+                <header><img src="/static/comments/images/img.jpg"></header>
+                <div class="comment-right">
+                  <h3>匿名</h3>
+                  <div class="comment-content-header"><span><i class="glyphicon glyphicon-time"></i> 2017-10-17 11:42:53</span><span><i class="glyphicon glyphicon-map-marker"></i>深圳</span></div>
+                  <p class="content">mongodb 副本集配置副本集概念：就我的理解就是和主从复制 差不多，就是在主从复制的基础上多加了一个选举的机制。
+                  复制集 特点：数据一致性 主是唯一的，没有Mysql 那样的双主结构大多数原则，集群存活节点小于二分之一是集群不可写，
+                  只可读从库无法写入数据自动容灾通过下面的一个图来简单的了解下
+                  配置过程：一、安装mongodb安装过程略，不懂得可以看前面的教程二、创建存储目录与配置文件创...</p>
+                  <div class="comment-content-footer">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <span><i class="glyphicon glyphicon-pushpin"></i> 来自:win10 </span><span><i class="glyphicon glyphicon-globe"></i> chrome 55.0.2883.87</span>
+                      </div>
+                      <div class="col-md-2"><span class="reply-btn">回复</span></div>
+                    </div>
+                  </div>
+                  <div class="reply-list"></div>
+                </div>
+              </div>
+            
+              <div class="comment-info">
+                <header><img src="/static/comments/images/img.jpg"></header>
+                <div class="comment-right">
+                  <h3>匿名</h3>
+                  <div class="comment-content-header"><span><i class="glyphicon glyphicon-time"></i> 2017-10-17 11:42:53</span><span><i class="glyphicon glyphicon-map-marker"></i>深圳</span></div>
+                  <p class="content">mongodb 副本集配置副本集概念：就我的理解就是和主从复制 差不多，就是在主从复制的基础上多加了一个选举的机制。
+                  复制集 特点：数据一致性 主是唯一的，没有Mysql 那样的双主结构大多数原则，集群存活节点小于二分之一是集群不可写，
+                  只可读从库无法写入数据自动容灾通过下面的一个图来简单的了解下
+                   配置过程：一、安装mongodb安装过程略，不懂得可以看前面的教程二、创建存储目录与配置文件创...</p>
+                  <div class="comment-content-footer">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <span><i class="glyphicon glyphicon-pushpin"></i> 来自:win10 </span><span><i class="glyphicon glyphicon-globe"></i> chrome 55.0.2883.87</span>
+                      </div>
+                      <div class="col-md-2"><span class="reply-btn">回复</span></div>
+                    </div>
+                  </div>
+                  <div class="reply-list">
+                    <div class="reply">
+                      <div><a href="javascript:void(0)">匿名</a>:<a href="javascript:void(0)">@匿名</a><span>这写的是什么鬼东西。。。。</span></div>
+                      <p><span>2017-10-17 11:42:53</span> <span class="reply-list-btn">回复</span></p>
+                    </div>
+                    <div class="reply">
+                      <div><a href="javascript:void(0)">匿名</a>:<a href="javascript:void(0)">@匿名</a><span>这写的是什么鬼东西。。。。</span></div>
+                      <p><span>2017-10-17 11:42:53</span> <span class="reply-list-btn">回复</span></p>
+                    </div>
+                    <div class="reply">
+                      <div><a href="javascript:void(0)">匿名</a>:<a href="javascript:void(0)">@匿名</a><span>这写的是什么鬼东西。。。。</span></div>
+                      <p><span>2017-10-17 11:42:53</span> <span class="reply-list-btn">回复</span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div> -->
+        {/if}
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+{include file='index/common/rightbox'/}
+</article>
+
+{include file='index/common/footer'/}
+<script type="text/javascript" src="/static/comments/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/comments/js/jquery.comment.js" ></script>
+<script type="text/javascript" src="/static/admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript">
+	//初始化数据
+	var arr = [
+		{id:1,img:"/static/comments/images/img.jpg",replyName:"帅大叔",beReplyName:"匿名",content:"同学聚会，看到当年追我的屌丝开着宝马车带着他老婆来了，他老婆是我隔壁宿舍的同班同学，心里后悔极了。",time:"2017-10-17 11:42:53",address:"深圳",osname:"",browse:"谷歌",replyBody:[]},
+		{id:2,img:"/static/comments/images/img.jpg",replyName:"匿名",beReplyName:"",content:"到菜市场买菜，看到一个孩子在看摊，我问：“一只鸡多少钱？” 那孩子回答：“23。” 我又问：“两只鸡多少钱？” 孩子愣了一下，一时间没算过来，急中生智大吼一声：“一次只能买一只！”",time:"2017-10-17 11:42:53",address:"深圳",osname:"",browse:"谷歌",replyBody:[{id:3,img:"",replyName:"帅大叔",beReplyName:"匿名",content:"来啊，我们一起吃鸡",time:"2017-10-17 11:42:53",address:"",osname:"",browse:"谷歌"}]},
+		{id:3,img:"/static/comments/images/img.jpg",replyName:"帅大叔",beReplyName:"匿名",content:"同学聚会，看到当年追我的屌丝开着宝马车带着他老婆来了，他老婆是我隔壁宿舍的同班同学，心里后悔极了。",time:"2017-10-17 11:42:53",address:"深圳",osname:"win10",browse:"谷歌",replyBody:[]}
+	];
+	$(function(){
+		$(".comment-list").addCommentList({data:arr,add:""});
+		$("#comment").click(function(){
+			var obj = new Object();
+			obj.img="/static/comments/images/img.jpg";
+			obj.replyName="匿名";
+			obj.content=$("#content").val();
+			obj.browse="深圳";
+			obj.osname="win10";
+			obj.replyBody="";
+			$(".comment-list").addCommentList({data:[],add:obj});
+		});
+  })
+var isvote=false;
+function vote(type,id,obj){
+			var formData = new FormData();
+      formData.append('type',type);
+      formData.append('article_id',id);
+      //formData.append('autor',"123456");
+      if(!isvote)
+      {
+        sentDate(formData);
+        if(type=='ulove')
+        {
+          $(obj).parents("div").find(".ulove").prepend('');
+          $(obj).parents("div").find(".ulove").html("&nbsp;&nbsp;&nbsp;&nbsp;还不错哟("+({$article.ulove}+1)+")&nbsp;&nbsp;&nbsp;&nbsp;");
+          //$(obj).remove();
+          layer.msg('^_^!',{icon:1,time:1000});
+        }
+        else if(type=='uhate')
+        {
+          $(obj).parents("div").find(".uhate").prepend('');
+          $(obj).parents("div").find(".uhate").html("&nbsp;&nbsp;&nbsp;&nbsp;就这样啦("+({$article.uhate}+1)+")&nbsp;&nbsp;&nbsp;&nbsp;");
+          layer.msg('我会继续努力的!',{icon:1,time:1000});
+          //$(obj).remove();
+        }
+        isvote=true;
+      }
+      else
+      {
+        layer.msg('你已经投过了哟！！！',{icon:2,time:1000});
+      }
+      
+}
+function sentDate(formData)
+{
+  $.ajax({
+      url: '/Tools',
+      type: 'POST',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+      // dataType: 'jsonp',
+      // calback: "callback",
+      // cache: false,
+      success: function (data) {
+              console.log(data);
+              //console.log(data['msg']);
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+              console.log(XMLHttpRequest.status);
+              console.log(XMLHttpRequest.readyState);
+              console.log(textStatus);
+          }
+      });
+}
+
+
+</script>
+</body>
+</html>

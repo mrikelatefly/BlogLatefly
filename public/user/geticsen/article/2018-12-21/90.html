@@ -1,0 +1,193 @@
+<p>
+	第一步：
+</p>
+<p>
+	首先下载phpMailer下载地址：<a href="https://github.com/PHPMailer/PHPMailer/" target="_blank">https://github.com/PHPMailer/PHPMailer/ </a> 
+</p>
+<p>
+	下载PHPMailer，PHPMailer 需要 PHP 的 sockets 扩展支持，而登录 QQ 邮箱 SMTP 服务器则必须通过 SSL 加密的， PHP 还得包含 openssl 的支持。所以你还必须打开这两个配置：
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<img src="https://images2017.cnblogs.com/blog/1308884/201801/1308884-20180103151555143-203295761.png" alt="" style="height:auto;" /> 
+</p>
+<p>
+	<br />
+</p>
+<hr />
+第二步：
+<p>
+	<br />
+</p>
+<p>
+	使用 phpinfo() 函数查看 socket 和 openssl 扩展信息（wamp server 默认启用了该扩展）。
+</p>
+<p>
+	openssl 如果没有开启请打开php.ini文件进行开启
+</p>
+<p>
+	首先检查php.ini中；extension=php_openssl.dll是否存在， 如果存在的话去掉前面的注释符‘；’， 如果不存在这行，那么添加extension=php_openssl.dll。
+</p>
+<p>
+	<img src="https://images2017.cnblogs.com/blog/1308884/201801/1308884-20180103152121846-1888666386.png" alt="" style="height:auto;" /> 
+</p>
+<h3>
+	PHPMailer 核心文件
+</h3>
+<p>
+	<img src="/uploads/image/20181219/20181219051419_60496.png" alt="" style="height:auto;" /> 
+</p>
+<h2>
+	<hr />
+	第三步：
+</h2>
+<h2>
+	<span style="font-size:12px;">QQ 邮箱设置</span> 
+</h2>
+<p>
+	所有的主流邮箱都支持 SMTP 协议，但并非所有邮箱都默认开启，您可以在邮箱的设置里面手动开启。
+</p>
+<p>
+	第三方服务在提供了账号和密码之后就可以登录 SMTP 服务器，通过它来控制邮件的中转方式。
+</p>
+<hr />
+<p>
+	<br />
+</p>
+<h3>
+	<span style="font-size:18px;"><strong>第四步：</strong></span> 
+</h3>
+<h3>
+	开启 SMTP 服务
+</h3>
+<p>
+	你如果只用发邮件的话那第一个选项也可以，开启之后一定要妥善保管自己的授权码。
+</p>
+<p>
+	<img src="https://images2017.cnblogs.com/blog/1308884/201801/1308884-20180103152451784-1315660463.png" alt="" style="height:auto;" /> 
+</p>
+<p>
+	选择 IMAP/SMTP 服务，点击开启服务
+</p>
+<h3>
+	<strong><span style="font-size:18px;"> 
+	<hr />
+	第五步：</span></strong> 
+</h3>
+<h3>
+	验证密保
+</h3>
+<p>
+	<img src="https://images2017.cnblogs.com/blog/1308884/201801/1308884-20180103152537893-1072628227.png" alt="" style="height:auto;" /> 
+</p>
+<p>
+	发送短信“配置邮件客户端”至1069-0700-69
+</p>
+<h3>
+	<span style="font-size:18px;">第六步：</span> 
+</h3>
+<h3>
+	获取授权码
+</h3>
+<p>
+	<img src="https://images2017.cnblogs.com/blog/1308884/201801/1308884-20180103152620878-1310182321.png" alt="" style="height:auto;" /> 
+</p>
+<p>
+	SMTP 服务器认证密码，需要妥善保管（PS：密码直接没有空格）
+</p>
+<h2>
+	<span style="font-size:18px;">第七步：</span> 
+</h2>
+<h2>
+	<span style="font-size:12px;">PHP发送邮件</span> 
+</h2>
+<p>
+	以下是最新的PHPMailer案例：
+</p>
+<p>
+	<!--?php<br /--> // 引入PHPMailer的核心文件<br />
+require_once("./src/PHPMailer.php");<br />
+require_once("./src/SMTP.php");<br />
+use PHPMailer\PHPMailer\PHPMailer;<br />
+function sendEmail($from,$code,$nickName,$toUser,$title,$content,$attachment=""){<br />
+// 实例化PHPMailer核心类<br />
+$mail = new PHPMailer();<br />
+// 是否启用smtp的debug进行调试 开发环境建议开启 生产环境注释掉即可 默认关闭debug调试模式<br />
+//$mail-&gt;SMTPDebug = 1;<br />
+// 使用smtp鉴权方式发送邮件<br />
+$mail-&gt;isSMTP();<br />
+// smtp需要鉴权 这个必须是true<br />
+$mail-&gt;SMTPAuth = true;<br />
+// 链接qq域名邮箱的服务器地址<br />
+$mail-&gt;Host = 'smtp.qq.com';<br />
+// 设置使用ssl加密方式登录鉴权<br />
+$mail-&gt;SMTPSecure = 'ssl';<br />
+// 设置ssl连接smtp服务器的远程服务器端口号<br />
+$mail-&gt;Port = 465;<br />
+// 设置发送的邮件的编码<br />
+$mail-&gt;CharSet = 'UTF-8';<br />
+// 设置发件人昵称 显示在收件人邮件的发件人邮箱地址前的发件人姓名<br />
+$mail-&gt;FromName = $nickName;<br />
+// smtp登录的账号 QQ邮箱即可<br />
+$mail-&gt;Username = $from;<br />
+// smtp登录的密码 使用生成的授权码<br />
+$mail-&gt;Password = $code;<br />
+// 设置发件人邮箱地址 同登录账号<br />
+$mail-&gt;From = $from;<br />
+// 邮件正文是否为html编码 注意此处是一个方法<br />
+$mail-&gt;isHTML(true);<br />
+// 设置收件人邮箱地址<br />
+$mail-&gt;addAddress($toUser);<br />
+// 添加多个收件人 则多次调用方法即可<br />
+//$mail-&gt;addAddress('1931946508@qq.com');<br />
+// 添加该邮件的主题<br />
+$mail-&gt;Subject = $title;<br />
+// 添加邮件正文<br />
+$mail-&gt;Body = $content;<br />
+// 为该邮件添加附件<br />
+if($attachment!=""){<br />
+$mail-&gt;addAttachment($attachment);<br />
+}<br />
+// 发送邮件 返回状态<br />
+$status = $mail-&gt;send();<br />
+echo $status;<br />
+}<br />
+sendEmail("发件人邮箱","授权码","昵称","收件人邮箱","邮件标题","邮件内容");
+</p>
+<p>
+	//实例
+</p>
+<p>
+	//sendEmail("286348794@qq.com","授权码","南下.牧风","2831367585@qq.com","hello","test");
+</p>
+<p>
+	?&gt;
+</p>
+<p>
+	效果：
+</p>
+<p>
+	<img src="/uploads/image/20181219/20181219053001_20178.png" alt="" /> 
+</p>
+<p>
+	<strong><span style="font-size:14px;"> </span></strong>
+</p>
+<hr />
+<strong>注意一下几点</strong> 
+<p>
+	<br />
+</p>
+<p>
+	<strong><span style="font-size:14px;">1引用的时候的路径问题</span></strong> 
+</p>
+<p>
+	<strong><span style="font-size:14px;">2命名空间的问题</span></strong> 
+</p>
+<p>
+	<strong><span style="font-size:14px;">3发送的字符集编码 要发送中文最好用$mail-&gt;CharSet = 'UTF-8';默认的字符集发送中文可能会出现乱码问题</span></strong> 
+</p>
+<p>
+	<strong><span style="font-size:14px;">当然了现在只是一个简单应用，你还可以做很多，例如注册时邮件提醒（短信费还是蛮贵的呢）</span></strong> 
+</p>

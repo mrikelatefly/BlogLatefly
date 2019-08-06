@@ -1,0 +1,37 @@
+<p>
+	在网上百度了很多都说用split方法然后数组合并，我试了并没有用，还有的呢就是用replaceAll这个方法，我去试了试也发现没有用
+</p>
+<p>
+	最后 用了字符数组的形式解决了这个问题。现在简单总结一下。
+</p>
+<p>
+	<br />
+</p>
+<p>
+<pre class="prettyprint lang-java">package Test;
+
+public class test2 {
+	
+	public static void main(String args[]){
+		//带有转义字符的字符串
+		String tt="1234\\/56";
+		StringBuffer finall=new StringBuffer();
+		char a[]=tt.toCharArray();
+	
+		for(int i=0;i&lt;tt.length();i++){
+			if(a[i]!='\\'){
+				finall.append(a[i]);
+			}
+		}
+	
+		System.out.println(finall.toString());
+			
+	}
+
+}
+//最终输出：
+//1234/56</pre>
+</p>
+<p>
+	简单的就是用字符数组然后遍历用StringBuffer来接收单个字符最后toString
+</p>

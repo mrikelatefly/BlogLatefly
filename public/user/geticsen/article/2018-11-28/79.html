@@ -1,0 +1,197 @@
+<p>
+	<span style="font-size:16px;">前期准备：</span> 
+</p>
+<p>
+	<span style="font-size:16px;">1.python学习</span> 
+</p>
+<p>
+	<span style="font-size:16px;">2.了解网络知识</span> 
+</p>
+<p>
+	<span style="font-size:16px;">3.了解爬虫原理</span> 
+</p>
+<p>
+	<span style="font-size:16px;">4.requests模块的运用知识</span> 
+</p>
+<p>
+	<span style="font-size:16px;">5.Beautiful模块的理解运用</span> 
+</p>
+<p>
+	<span style="font-size:16px;">6.数据库知识的运用</span> 
+</p>
+<p>
+	<span style="font-size:16px;">7.pymysql的运用</span> 
+</p>
+<p>
+	<br />
+</p>
+<p>
+	在这里我不在赘述python的安装以及pip安装<span>requests，<span>pymysql</span>，<span>Beautiful网上有很多教程（前期请面向百度编程）</span></span> 
+</p>
+<p>
+	<br />
+</p>
+<hr />
+做好前面几点，我们开始编写爬虫
+<p>
+	<br />
+</p>
+<p>
+	<span style="font-size:16px;">1明确目标：目标网站 </span><a href="http://www.youdict.com/ciku/" target="_blank"> <span style="color:#003399;"> </span><span style="color:#003399;font-size:16px;">http://www.youdict.com</span><span style="color:#003399;font-size:16px;">/ciku/</span></a> 
+</p>
+<img width="100%" src="/uploads/image/20181128/20181128115715_71325.png" alt="" /> 
+<p>
+	<br />
+</p>
+<p>
+	目标元素：单词（包括英文，中文），单词连接，图片连接
+</p>
+<p>
+	<img width="100%" src="/uploads/image/20181128/20181128115826_68765.png" alt="" /> 
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<span style="font-size:16px;">2.编写获取页面以及获取元素代码：</span> 
+</p>
+<p>
+	<br />
+</p>
+<pre class="prettyprint lang-py">newsurl='http://www.youdict.com\
+        /ciku/id_5_0_0_0_0.html'
+res=requests.get(newsurl)
+#res=requests.get(newsurl)
+res.encoding='utf-8'
+soup =BeautifulSoup(res.text,'html.parser')
+#print(soup)
+divs=soup.select(".col-sm-6")
+#print(divs[0])
+for each_div in divs:
+    english=each_div.div.div.h3.a.text
+    imgurl=transurl(each_div.div.img['src'])
+    chinese=each_div.div.p.text
+    #print(english+"   "+imgurl+"  "+chinese)
+    insert(english,chinese,imgurl)</pre>
+<p>
+	<br />
+</p>
+<p>
+	<span style="font-size:16px;">3.根据页面跳转规则拼接url：</span> 
+</p>
+<p>
+	newsurl='http://www.youdict.com\ciku/id_5_0_0_0_'+str(i)+'.html'
+</p>
+<p>
+	i&nbsp; 是由循环确定
+</p>
+<p>
+	<br />
+</p>
+<hr />
+<p>
+	<br />
+</p>
+<p>
+	<span style="font-size:16px;">4.连接数据库:</span> 
+</p>
+<p>
+	def insert(english,chinese,imgurl):<br />
+db = pymysql.connect("localhost","root","your\<br />
+db pass","your db name" ) <br />
+cursor = db.cursor()<br />
+#summary = summary.tostring(summary,encoding='utf-8')<br />
+english=pymysql.escape_string(english)<br />
+chinese=pymysql.escape_string(chinese)<br />
+imgurl=pymysql.escape_string(imgurl)<br />
+sql="insert into reaserchwords(english,chinese,\<br />
+imgurl) values('"+english+"','"+chinese+"','"+imgurl+"')"<br />
+cursor.execute(sql)<br />
+db.commit()<br />
+db.close()
+</p>
+<p>
+	<br />
+</p>
+<hr />
+<p>
+	<br />
+</p>
+<p>
+	<span style="font-size:16px;">5.组合起来完整的爬虫：</span>
+</p>
+<p>
+	<span style="font-size:16px;">
+<pre class="prettyprint lang-py"># coding=utf-8
+'''
+Created on 2018.8.18
+@author: ZEC---
+'''
+
+import requests
+import pymysql
+from bs4 import BeautifulSoup
+
+
+def insert(english,chinese,imgurl):
+    db = pymysql.connect("localhost","root","your\
+    db pass","your db name" ) 
+    cursor = db.cursor()
+    #summary = summary.tostring(summary,encoding='utf-8')
+    english=pymysql.escape_string(english)
+    chinese=pymysql.escape_string(chinese)
+    imgurl=pymysql.escape_string(imgurl)
+    sql="insert into reaserchwords(english,chinese,\
+    imgurl) values('"+english+"','"+chinese+"','"+imgurl+"')"
+    
+    cursor.execute(sql)
+    db.commit()
+    db.close()
+def transurl(url):
+    url="http://www.youdict.com"+url
+    url.strip('\n')
+    return url
+def main_thread(start,end):
+    i=start
+    while i&lt;end: 
+        newsurl='http://www.youdict.com\
+        /ciku/id_5_0_0_0_'+str(i)+'.html'
+        res=requests.get(newsurl)
+        #res=requests.get(newsurl)
+        res.encoding='utf-8'
+        soup =BeautifulSoup(res.text,'html.parser')
+        #print(soup)
+        divs=soup.select(".col-sm-6")
+        #print(divs[0])
+        for each_div in divs:
+            english=each_div.div.div.h3.a.text
+            imgurl=transurl(each_div.div.img['src'])
+            chinese=each_div.div.p.text
+            #print(english+"   "+imgurl+"  "+chinese)
+            insert(english,chinese,imgurl)
+        print(str(i+1)+"页面 is ok")
+        i=i+1
+
+main_thread(67,274)
+</pre>
+</span>
+</p>
+<hr />
+<p>
+	<br />
+</p>
+<p>
+	自己做的单词搜索页面如图：
+</p>
+<p>
+	<a href="http://www.senlear.com/words" target="_blank"><span style="color:#003399;">www.senlear.com/words</span></a> 
+</p>
+<p>
+	<img width="100%" src="/uploads/image/20181128/20181128120041_57134.png" alt="" /> 
+</p>
+<p>
+	<br />
+</p>

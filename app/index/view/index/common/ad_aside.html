@@ -1,0 +1,77 @@
+<aside class="Hui-aside">
+        <div class="menu_dropdown bk_2">
+            <dl id="menu-article">
+                <dt><i class="Hui-iconfont">&#xe616;</i>我的文章<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="/Addarticle" title="添加文章">添加文章</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="/Articlemanage" title="管理文章">管理文章</a></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl id="menu-comments">
+                <dt><i class="Hui-iconfont">&#xe622;</i> 记录管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="#" title="评论列表">评论列表</a></li>
+                        <li><a href="#" title="意见反馈">意见反馈</a></li>
+                        <li><a href="#" title="浏览记录">浏览记录</a></li>
+                        <!-- <li><a href="#" title="下载记录">下载记录</a></li>
+                        <li><a href="#" title="留言管理">留言管理</a></li> -->
+                    </ul>
+                </dd>
+            </dl>
+            
+            {if condition="$user.authority eq 0 or $user.authority eq 1"}
+                <dl id="menu-member">
+                    <dt><i class="Hui-iconfont">&#xe60d;</i> 管理员<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                    <dd>
+                        <ul>
+                            <li><a href="/Adminarticlecheck" title="文章审核">文章审核</a></li>
+                            <li><a href="#" title="发布公告">发布公告</a></li>
+                            
+                        </ul>
+                    </dd>
+                </dl>
+                <dl id="menu-admin">
+                    <dt><i class="Hui-iconfont">&#xe62d;</i> 权限及信息<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                    <dd>
+                        <ul>
+                            <li><a href="#" title="基本信息">基本信息</a></li>
+                            <li><a href="#" title="权限管理">权限管理</a></li>
+                        </ul>
+                    </dd>
+                </dl>
+            {/if}
+            
+            <dl id="menu-tongji">
+                <dt><i class="Hui-iconfont">&#xe61a;</i> 统计信息<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="/Charts1" title="折线图">折线图</a></li>
+                        <li><a href="/Charts2" title="时间轴折线图">时间轴折线图</a></li>
+                    </ul>
+                </dd>
+            </dl>
+            
+
+            <dl id="menu-system">
+                <dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="#" title="系统设置">系统设置</a></li>
+                        <li><a href="#" title="数据字典">数据字典</a></li>
+                        <li><a href="#" title="栏目管理">栏目管理</a></li>
+                        {if condition="$user.authority eq 0 or $user.authority eq 1"}
+                            <li><a href="#" title="屏蔽词">屏蔽词</a></li>
+                            <li><a href="#" title="系统日志">系统日志</a></li>
+                        {/if}
+                        
+                    </ul>
+                </dd>
+            </dl>
+        </div>
+    </aside>
+    <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>

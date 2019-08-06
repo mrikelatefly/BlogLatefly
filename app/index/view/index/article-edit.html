@@ -1,0 +1,261 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+{include file='index/common/ad_htmlhead'}
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file='index/common/ad_header'}
+<!--/_header 作为公共模版分离出去-->
+
+<form enctype="multipart/form-data" class="form form-horizontal" id="form-article-add">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章标题：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="{$article.title}" placeholder="" id="" name="title">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章类型：</label>
+		<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+			<select name="type" class="select">
+					{volist name="selectType" id="type"}
+					{if condition="$type.value2 neq '0' "}
+					<option value="{$type.type2}">{$type.value2}</option>
+					{/if}
+					{/volist}
+				<!-- <option value="5">新闻资讯</option> -->
+			</select>
+			</span></div>
+	</div>
+	<!-- <div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2">排序值：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="0" placeholder="" id="" name="sortvalue">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2">关键词：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="" name="keyword">
+		</div>
+	</div> -->
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2">文章摘要：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<textarea name="summary" cols="" rows="" class="textarea"  placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)">{$article.summary}</textarea>
+			<p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2">文章封面：</label>
+		<div class="container formControls col-xs-8 col-sm-9">
+			<input type="file" id='id-face' name='article_cover'  accept="image/*" />
+			<div id='face-empty-result'>
+					<img style='width:100%' src="" alt="">
+					<p>点击更换文章封面</p>
+			</div>
+			<img style='width: 100%' id='face-result' src=' {$article.img_url}'/>	
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2">允许评论：</label>
+		<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+			<div class="check-box">
+				<input type="checkbox" id="checkbox-pinglun">
+				<label for="checkbox-pinglun">&nbsp;</label>
+			</div>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-2">文章内容：</label>
+		<div class="formControls col-xs-8 col-sm-9"> 
+			<div id="editor" type="text/plain" style="width:100%;height:400px;"></div> 
+		</div>
+	</div>
+	<div class="row cl">
+		<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+			<button onClick="submitForm();" type="button" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe632;</i> 保存并提交审核</button>
+			<button onClick="article_save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存草稿</button>
+			<button onClick="removeIframe();" class="btn btn-default radius" type="button">&nbsp;&nbsp;重置&nbsp;&nbsp;</button>
+		</div>
+	</div>
+</form>
+<!--_footer 作为公共模版分离出去-->
+{include file='index/common/ad_script'}
+<!--/_footer /作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>   
+<script type="text/javascript" src="/static/admin/lib/webuploader/0.1.5/webuploader.min.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.config.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/ueditor.all.min.js"> </script> 
+<script type="text/javascript" src="/static/admin/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+var comment_permission={$article.comment_permission};
+var article_type=0;
+var article_cover='';
+
+$(function(){
+	
+	var editor = UE.getEditor('editor');
+	editor.ready(function() {
+		var formData = new FormData();
+		formData.append('getContent',"1");
+		$.ajax({
+				url:'/Editarticle?id={$article.id}',
+				type: 'POST',
+				data: formData,
+				//这两个设置项必填
+				contentType: false,
+				processData: false,
+				success:function(data){
+					editor.setContent(data);
+					$(".select").val("{$article.type}");
+					if({$article.comment_permission}==1)
+					{
+						$("#checkbox-pinglun").attr("checked",'true');
+					}
+					//$("input[type=radio][name=sex][value=1]").attr("checked",true);	
+				}
+		});
+	});
+	document.getElementById("id-face").addEventListener("change", function(){       
+        onFileChange(this,"face-result","face-empty-result")
+	});
+
+	$('#id-face').change(function(event) {
+        var formData = new FormData();
+        formData.append("file", $(this).get(0).files[0]);
+		sentUpLoadImg(formData);
+	});
+
+	$(".select").click(function(){
+		article_type=$(".select").val();
+		console.log($(".select").val());
+	});
+	$("#checkbox-pinglun").click(function(){
+		//console.log();
+		if($("#checkbox-pinglun").is(':checked')){
+			comment_permission=1;
+			console.log("checked");
+		}else{
+			comment_permission=0;
+			console.log("not checked");
+		}
+	});
+	
+});
+function article_save(){
+	layer.confirm('确认存为草稿？',function(index){
+
+		layer.msg('已经存为草稿！',{icon: 1,time:1000});		
+	});
+}
+function removeIframe(){
+	layer.confirm('<img src="/static/404/images/load.gif"/>',function(index){
+
+		layer.msg('已经重置！',{icon: 1,time:1000});		
+	});
+}
+//formdata储存异步上传数据
+function submitForm(){
+		var formData = new FormData($('form')[0]);
+		formData.append('submitEdit',"1");
+		formData.append('comment_permission',comment_permission);
+		formData.append('article_type',article_type);
+		formData.append('article_cover',article_cover);
+
+		//formData.append('autor',"123456");
+		//坑点: 无论怎么传数据,console.log(formData)都会显示为空,但其实值是存在的,f12查看Net tab可以看到数据被上传了
+		layer.confirm('确认提交吗？',function(index){
+			$.ajax({
+				url:'/Editarticle?id={$article.id}',
+				type: 'POST',
+				data: formData,
+				//这两个设置项必填
+				contentType: false,
+				processData: false,
+				success:function(data){
+					console.log(data);
+					layer.msg('文章已提交！',{icon: 1,time:1000});
+					
+				}
+			});
+			
+		});
+		
+}
+
+function sentUpLoadImg(formData)
+{
+	$.ajax({
+            url: '/Tools/uploadimg',
+            type: 'POST',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+            dataType: 'json',
+            success: function (data) {
+				　　console.log(data['photo']);
+					article_cover=data['photo'];
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown){
+				console.log(XMLHttpRequest.status);
+                console.log(XMLHttpRequest.readyState);
+				console.log(textStatus);
+				layer.msg('图片过大或者不支持！！!',{icon:2,time:1000});
+             }
+    });
+}
+
+/**
+ * 选中图片时的处理
+ * @param {*} fileObj input file元素
+ * @param {*} el //选中后用于显示图片的元素ID
+ * @param {*} btnel //未选中图片时显示的按钮区域ID
+ */
+ function onFileChange(fileObj,el,btnel){
+    var windowURL = window.URL || window.webkitURL;
+    var dataURL;
+    var imgObj = document.getElementById(el);
+    document.getElementById(btnel).style.display="none";
+    imgObj.style.display="block";
+    if (fileObj && fileObj.files && fileObj.files[0]) {
+        dataURL = windowURL.createObjectURL(fileObj.files[0]);
+        imgObj.src=dataURL;
+    } else {
+        dataURL = fileObj.value;
+        imgObj.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+        imgObj.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = dataURL;
+    }
+}
+
+
+/**
+ * 将图片压缩后返回base64格式的数据
+ * @param {*} image img元素
+ * @param {*} width 压缩后图片宽度
+ * @param {*} height 压缩后图片高度
+ * @param {*} qua //图片质量1-100
+ */
+function compressImageTobase64(image,width,height,qua){
+    var quality = qua ? qua / 100 : 0.8;
+    var canvas = document.createElement("canvas"),     
+        ctx = canvas.getContext('2d');     
+    var w = image.naturalWidth,     
+        h = image.naturalHeight;     
+    canvas.width = width||w;     
+    canvas.height = height||h;     
+    ctx.drawImage(image, 0, 0, w, h, 0, 0, width||w, height||h);
+    var data = canvas.toDataURL("image/jpeg", quality);     
+    return data;
+}	
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

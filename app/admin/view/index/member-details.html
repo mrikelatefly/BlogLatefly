@@ -1,0 +1,84 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+{include file='index/common/ad_htmlhead'}
+<title>用户信息- latefly admin</title>
+	<script>
+	function addRow(){
+		var oTable = document.getElementById("oTable");
+		var tBodies = oTable.tBodies;
+		var tbody = tBodies[0];
+		var tr = tbody.insertRow(tbody.rows.length);
+		var td_1 = tr.insertCell(0);
+		td_1.innerHTML = "<div contenteditable='true'>第1列</div>";
+		var td_2 = tr.insertCell(1);
+		td_2.innerHTML = "<div contenteditable='true'>第2列</div>";
+		}
+	
+	</script>
+</head>
+<body>
+<article class="cl pd-20">
+	<form action="" method="post" class="form form-horizontal" id="form-member-add">
+		<table id="oTable" style="background-color:#eeeeee;" bordercolor="#aaaaaa" border="1" cellpadding="0" cellpadding="2" width="100%">
+			<thead><tr><th>第一列标题</th> <th>第二列标题</th></tr></thead>
+			<tbody>
+			<tr>
+			<td><div contenteditable="true">第一行第一列</div></td>
+			<td><div contenteditable="true">第一行第二列</div></td>
+			</tr>
+			</tbody>
+			</table>
+			<input type="button" onClick="addRow();" style="font-size:16px;" value="add" text-align='center'/>
+			<input type="button" onClick="submit();" style="font-size:16px;" value="submit" text-align='center'/>
+	</form>
+
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+{include file='index/common/ad_script'}
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="/static/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script> 
+<script type="text/javascript">
+$(function(){
+	
+});
+function submit(){
+	var formData = new FormData($('form')[0]);
+	formData.append('submit','submit');
+	//sent(formData);
+	console.log("afaefjaeijfiajefi");
+}
+function sent(datas)
+{
+		$.ajax({
+        url: '/admin.php/Memberlist',
+        type: 'POST',
+		data: datas,
+
+		//这两个设置项必填
+		contentType: false,
+		processData: false,
+        dataType: 'json',
+        // calback: "callback",
+        // cache: false,
+        success: function (data) {
+			console.log(data);
+        },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {			
+            	console.log(XMLHttpRequest.status);
+				console.log(XMLHttpRequest.readyState);
+				console.log(textStatus);
+            }
+        });
+}
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

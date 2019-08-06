@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<!---头部引用--->
+{include file='index/common/htmlhead'}
+</head>
+<body>
+<header>
+  <!---头像以及联系方式-->
+  {include file='index/common/header'}
+  <!----导航栏----->
+  {include file='index/common/navigate'}
+</header>
+
+
+<article>
+  <div class="picsbox">
+    {volist name="lists" id="dir"}
+      <li>
+        <h3><a href='/share/{$dir}' target="_blank">{$dir}</a></h3>
+      </li>
+      <!---{  if condition="$item.img_url eq null or $item.img_url eq ''"}
+          {  else/}
+          {  /if}----->
+      {/volist}
+  </div>
+</article>
+<div class="blank"></div>
+<!---footer-->
+{include file='index/common/footer'}
+</body>
+</html>
+
+
+

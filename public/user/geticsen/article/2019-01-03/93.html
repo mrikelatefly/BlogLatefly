@@ -1,0 +1,289 @@
+<h1>
+	前期准备：
+</h1>
+<p>
+	1.python的模块安装，依赖的库有两个Beautifulsoup还有pymysql
+</p>
+<p>
+	使用pip命令安装，如图：
+</p>
+<p>
+	<img width="100%" src="/uploads/image/20190103/20190103070200_98905.png" alt="" /> 
+</p>
+<p>
+	2.检查要爬取的网页：
+</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"=""> <span style="color:#ce9178;"><a href="http://www.sohu.com/" target="_blank"><span style="color:#003399;">http://www.sohu.com/</span></a></span> 
+	</div>
+	<p>
+		<img width="100%" src="/uploads/image/20190103/20190103070220_65234.jpg" alt="" /> 
+	</p>
+<br />
+	<p>
+		<img width="100%" src="/uploads/image/20190103/20190103070243_24974.jpg" alt="" /> 
+	</p>
+	<h1>
+		2.爬取分析
+	</h1>
+	<p>
+		那我们很容易得到标签的位置<span>解析如下：</span> 
+	</p>
+	<p>
+		<br />
+	</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"="">
+	<div>
+		newsurl=<span style="color:#ce9178;">'http://www.sohu.com/'</span> 
+	</div>
+	<div>
+		res=requests.<span style="color:#dcdcaa;">get</span>(newsurl)
+	</div>
+	<div>
+		res.encoding=<span style="color:#ce9178;">'utf-8'</span> 
+	</div>
+	<div>
+		soup =<span style="color:#dcdcaa;">BeautifulSoup</span>(res.text,<span style="color:#ce9178;">'html.parser'</span>)
+	</div>
+	<div>
+		L=[<span style="color:#ce9178;">'.news p a'</span>,<span style="color:#ce9178;">'.list16 ul li a'</span>]
+	</div>
+	<div>
+		<span style="color:#c586c0;">for</span> newclass in L:
+	</div>
+	<div>
+		news=soup.<span style="color:#dcdcaa;">select</span>(newclass)
+	</div>
+</div>
+<p>
+	<br />
+</p>
+<p>
+	现在已经得到了新闻的列表我们只需要分条解析就可以了
+</p>
+<p>
+	<br />
+</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"="">
+<div>
+	<span style="color:#c586c0;">for</span> each in news:
+</div>
+<div>
+	link=each[<span style="color:#ce9178;">"href"</span>]
+</div>
+<div>
+	title=each[<span style="color:#ce9178;">"title"</span>]
+</div>
+<div>
+	link=<span style="color:#dcdcaa;">transurl</span>(link)
+</div>
+<div>
+	<span style="color:#dcdcaa;">print</span>(title)
+</div>
+<div>
+	<span style="color:#dcdcaa;">print</span>(link)
+</div>
+<div>
+	content=<span style="color:#ce9178;">''</span> 
+</div>
+<div>
+	img=<span style="color:#ce9178;">''</span> 
+</div>
+<div>
+	url=each[<span style="color:#ce9178;">"href"</span>]
+</div>
+<div>
+	url=<span style="color:#dcdcaa;">transurl</span>(url)
+</div>
+	</div>
+现在已经得到了整条新闻部分的要素
+	<p>
+		<br />
+	</p>
+	<p>
+		包括 标题 连接，是不是觉得还少点什么？没错没有内容还有图片
+	</p>
+	<p>
+		好了接下来实现解析下一页
+	</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"="">
+	<div>
+		res1=requests.<span style="color:#dcdcaa;">get</span>(url)
+	</div>
+	<div>
+		res1.encoding=<span style="color:#ce9178;">'utf-8'</span> 
+	</div>
+	<div>
+		soup1 =<span style="color:#dcdcaa;">BeautifulSoup</span>(res1.text,<span style="color:#ce9178;">'html.parser'</span>)
+	</div>
+	<div>
+		news1=soup1.<span style="color:#dcdcaa;">select</span>(<span style="color:#ce9178;">'.article p img'</span>)
+	</div>
+	<div>
+		<span style="color:#c586c0;">if</span> <span style="color:#dcdcaa;">len</span>(news1)&gt;=<span style="color:#b5cea8;">1</span>:
+	</div>
+	<div>
+		img=news1[<span style="color:#b5cea8;">0</span>][<span style="color:#ce9178;">'src'</span>]
+	</div>
+	<div>
+		img=<span style="color:#dcdcaa;">transurl</span>(img)
+	</div>
+	<div>
+		atricle=soup1.<span style="color:#dcdcaa;">select</span>(<span style="color:#ce9178;">'.article p'</span>)
+	</div>
+	<div>
+		<span style="color:#c586c0;">for</span> p in atricle:
+	</div>
+	<div>
+		content+=p.text
+	</div>
+	<div>
+		<span style="color:#6a9955;">#print(content)</span> 
+	</div>
+</div>
+<p>
+	已经拿到所有的内容了现在插入数据库（mysql）
+</p>
+<p>
+	<br />
+</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"="">
+<div>
+	<span style="color:#c586c0;">if</span> img==<span style="color:#ce9178;">''</span>:
+</div>
+<div>
+	<span style="color:#dcdcaa;">insert</span>(title,content,link)
+</div>
+<div>
+	<span style="color:#c586c0;">else</span>:
+</div>
+<div>
+	<span style="color:#dcdcaa;">insert</span>(title,content,link,img)
+</div>
+	</div>
+插入数据库的代码
+	<p>
+		<br />
+	</p>
+	<p>
+		<br />
+	</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"="">
+	<div>
+		def <span style="color:#dcdcaa;">insert</span>(title,summary,link,img=<span style="color:#ce9178;">''</span>):
+	</div>
+	<div>
+		db = pymysql.<span style="color:#dcdcaa;">connect</span>(<span style="color:#ce9178;">"****"</span>,<span style="color:#ce9178;">"****"</span>,<span style="color:#ce9178;">"***"</span>,<span style="color:#ce9178;">"***"</span> )
+	</div>
+	<div>
+		cursor = db.<span style="color:#dcdcaa;">cursor</span>()
+	</div>
+	<div>
+		<span style="color:#6a9955;">#summary = summary.tostring(summary,encoding='utf-8')</span> 
+	</div>
+	<div>
+		title=pymysql.<span style="color:#dcdcaa;">escape_string</span>(title)
+	</div>
+	<div>
+		summary=pymysql.<span style="color:#dcdcaa;">escape_string</span>(summary)
+	</div>
+	<div>
+		<span style="color:#c586c0;">if</span> img!=<span style="color:#ce9178;">''</span>:
+	</div>
+	<div>
+		sql=<span style="color:#ce9178;">"insert into imgnews(title,imgpath,summary,link) values('"</span>+title+<span style="color:#ce9178;">"','"</span>+img+<span style="color:#ce9178;">"','"</span>+summary+<span style="color:#ce9178;">"','"</span>+link+<span style="color:#ce9178;">"')"</span> 
+	</div>
+	<div>
+		<span style="color:#c586c0;">else</span>:
+	</div>
+	<div>
+		sql=<span style="color:#ce9178;">"insert into wordnews(title,summary,link) values('"</span>+title+<span style="color:#ce9178;">"','"</span>+summary+<span style="color:#ce9178;">"','"</span>+link+<span style="color:#ce9178;">"')"</span> 
+	</div>
+	<div>
+		cursor.<span style="color:#dcdcaa;">execute</span>(sql)
+	</div>
+	<div>
+		db.<span style="color:#dcdcaa;">commit</span>()
+	</div>
+	<div>
+	</div>
+	<div>
+		db.<span style="color:#dcdcaa;">close</span>()
+	</div>
+<br />
+</div>
+好了所有代码如下：
+<p>
+<pre class="prettyprint lang-php"># coding=utf-8
+'''
+@author: ZEC---
+
+'''
+
+import requests
+import pymysql
+from bs4 import BeautifulSoup
+
+def insert(title,summary,link,img=''):
+    db = pymysql.connect("localhost","root","286348794","webdb" ) 
+    cursor = db.cursor()
+    #summary = summary.tostring(summary,encoding='utf-8')
+    title=pymysql.escape_string(title)
+    summary=pymysql.escape_string(summary)
+    if img!='':
+        sql="insert into imgnews(title,imgpath,summary,link) values('"+title+"','"+img+"','"+summary+"','"+link+"')"
+    else:
+        sql="insert into wordnews(title,summary,link) values('"+title+"','"+summary+"','"+link+"')"
+    cursor.execute(sql)
+    db.commit()
+    db.close()
+
+def transurl(url):
+    if  url.startswith('http:') or url.startswith('https:'):
+        url=url
+    else:
+        url='http:'+url
+    return url
+    
+newsurl='http://www.sohu.com/'
+res=requests.get(newsurl)
+res.encoding='utf-8'
+soup =BeautifulSoup(res.text,'html.parser')
+L=['.news p a','.list16 ul li a']
+for newclass in L:
+    news=soup.select(newclass)
+    #print(news)
+    for each in news:
+        link=each["href"]
+        title=each["title"]
+        link=transurl(link)
+        print(title)
+        print(link)
+        content=''
+        img=''
+        url=each["href"]
+        url=transurl(url)
+        res1=requests.get(url)
+        res1.encoding='utf-8'
+        soup1 =BeautifulSoup(res1.text,'html.parser')
+        news1=soup1.select('.article p img')
+        if len(news1)&gt;=1:
+            img=news1[0]['src']
+            img=transurl(img)
+        atricle=soup1.select('.article p')
+        for p in atricle:
+            content+=p.text
+        #print(content)
+        if img=='':
+           insert(title,content,link)
+        else:
+           insert(title,content,link,img)</pre>
+</p>
+<p>
+	<br />
+</p>
+<p>
+	现在的爬虫很简单只是用来练手，我把新闻简单的分为两类，有图片的新闻和没有图片的新闻（为了写安卓的时候简单点）如果有兴趣可以根据搜狐的内容来爬取并且分类
+</p>
+<p>
+	<br />
+</p>

@@ -1,0 +1,19 @@
+<nav>
+        <ul id="starlist">
+          <li><a href="/Index">博客主页</a></li>
+          <li><a href="/Time">博文时轴</a></li>
+          <li><a href="/Lists">笔记心情</a></li>
+          <!-- <li><a href="/Share">博客相册</a></li> -->
+          <li><a href="#">博客相册</a></li>
+          <!---<li><a href="/Infopic">我的视频</a></li>--->
+          <!---<li><a href="/About">有关于我</a></li> --->
+          <li><a href="/Files">文件分享</a></li>
+          <!---这里可以通过条件判断判断是否处于登陆状态-->
+          {if condition="$account eq ''"}
+               <li><a href="/Login/index">登录/注册</a></li>
+          {else/}
+               <li><a href="/Userhome?user={$account}">个人主页</a></li>
+               <!---<li><a href="/Login/setUserOut">退出登录</a></li>--->
+          {/if}
+        </ul>
+</nav>

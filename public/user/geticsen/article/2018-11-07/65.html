@@ -1,0 +1,194 @@
+<h3 style="color:#333333;font-family:tahoma, 宋体;text-align:justify;background-color:#FAFAFC;">
+	第一步 – 安装Apache
+</h3>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	Apache Web服务器是目前世界上最受欢迎的Web服务器，它是托管网站的绝佳选择。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	我们可以使用 CentOS 的软件包管理器&nbsp;yum&nbsp;轻松安装 Apache 。软件包管理器允许我们从 CentOS 维护的存储库中安装大多数软件。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	我们可以通过键入以下命令来开始安装 Apache 服务：
+</p>
+<pre>sudo yum install httpd</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	由于我们使用sudo命令，这些操作将以 root 用户权限执行。它可能会询问您的用户密码以验证您的权限。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	到此，您的 Web 服务器已安装。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	一旦安装，您可以在服务器上上启动 Apache：
+</p>
+<pre>sudo systemctl start httpd.service</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	现在，在浏览器输入您的 IP 即可看到 Apache 的欢迎页面：
+</p>
+<pre>http://your_server_IP_address/</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	您将看到默认的 CentOS 7 Apache 网页，这是为了信息和测试目的。它应该看起来像这样：
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	<img class="alignnone size-full wp-image-137" src="https://www.linuxidc.com/upload/2017_05/170517095045261.png" alt="" width="705" /> 
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	如果您看到此页面，则您的 Web 你服务器现在已正确安装。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	最后想要做的是使 Apache 能够开机启动。使用以下命令执行此操作：
+</p>
+<pre>sudo systemctl enable httpd.service</pre>
+<h3 style="color:#333333;font-family:tahoma, 宋体;text-align:justify;background-color:#FAFAFC;">
+	第二步 – 安装MySQL（MariaDB）
+</h3>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	现在我们的 Web 服务器启动并运行了，现在是安装 MariaDB 的时候了，这是一个 MySQL 插件。MariaDB 是一个开源版本的 MySQL 数据库管理系统的分支。基本上，它将组织和访问我们的网站可以存储信息的数据库。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	我们继续用&nbsp;yum&nbsp;来获取和安装我们的软件。这一次，我们还将安装一些其他“帮助”软件包，帮助我们使组件相互通信：
+</p>
+<pre>sudo yum install mariadb-server mariadb</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	安装完成后，我们需要使用以下命令启动 MariaDB：
+</p>
+<pre>sudo systemctl start mariadb</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	现在我们的 MySQL 数据库正在运行，我们希望运行一个简单的安全脚本，它将删除一些危险的默认值，并锁定对我们的数据库系统的访问。运行以下操作启动交互式脚本：
+</p>
+<pre>sudo mysql_secure_installation</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	提示将询问您当前的 root 密码。既然你刚刚安装了 MySQL，你很可能没有一个，所以按&nbsp;<strong>Enter</strong>&nbsp;键留空。然后提示将询问您是否要设置 root 密码。继续输入<strong>Y</strong>，并按照说明进行操作：
+</p>
+<pre>Enter current password for root (enter for none):
+
+
+OK, successfully used password, moving on...
+
+Setting the root password ensures that nobody can log into the MariaDB root user without the proper authorization.
+
+New password: password Re-enter new password: password Password updated successfully! Reloading privilege tables.. ... Success!</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	对于其余的问题，您应该通过每个提示点击“ENTER”键接受默认值。这将删除一些示例用户和数据库，禁用远程root登录，并加载这些新规则，以便 MySQL 立即生效我们所做的更改。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	最后一件事就是让 MariaDB 开机启动。使用以下命令执行此操作：
+</p>
+<pre>sudo systemctl enable mariadb.service</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	在这一点上，您的数据库系统现在已经建立起来，我们可以继续前进。
+</p>
+<h3 style="color:#333333;font-family:tahoma, 宋体;text-align:justify;background-color:#FAFAFC;">
+	第三步 – 安装PHP
+</h3>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	PHP 是我们设置的组件，它将处理代码以显示动态内容。它可以运行脚本，连接到我们的 MySQL 数据库以获取信息，并将处理的内容交给我们的 Web 服务器进行显示。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	我们可以再次利用yum系统来安装我们的组件。我们还将包括 php-mysql 包：
+</p>
+<pre>sudo yum install php php-mysql</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	我们需要重新启动 Apache Web 服务器才能使用 PHP。您可以输入以下内容：
+</p>
+<pre>sudo systemctl restart httpd.service</pre>
+<h4 style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	安装PHP模块
+</h4>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	为了增强 PHP 的功能，我们可以选择安装一些其他模块。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	要查看 PHP 模块和库的可用选项，可以在系统中键入：
+</p>
+<pre>yum search php-</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	结果都是您可以安装的可选组件。它会给你一个简短的描述：
+</p>
+<pre>php-bcmath.x86_64 : A module for PHP applications for using the bcmath library
+
+php-cli.x86_64 : Command-line interface for PHP php-common.x86_64 : Common files for PHP php-dba.x86_64 : A database abstraction layer module for PHP applications php-devel.x86_64 : Files needed for building PHP extensions php-embedded.x86_64 : PHP library for embedding in applications php-enchant.x86_64 : Enchant spelling extension for PHP applications php-fpm.x86_64 : PHP FastCGI Process Manager php-gd.x86_64 : A module for PHP applications for using the gd graphics library . . .</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	要获得有关每个模块的更多信息，您可以搜索互联网，也可以通过键入以下内容查看包中的长描述：
+</p>
+<pre>yum info package_name</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	会有很多输出，一个字段称为Description的提供的功能的详细解释。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	例如，要了解 php-fpm 模块的功能，我们可以键入：
+</p>
+<pre>yum info php-fpm</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	除了大量的其他信息，您会发现如下所示：
+</p>
+<pre>. . .
+Summary : PHP FastCGI Process Manager URL : http://www.php.net/ License : PHP and Zend and BSD Description : PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI : implementation with some additional features useful for sites of : any size, especially busier sites.</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	如果在研究之后，您决定要安装一个软件包，可以使用&nbsp;yum install&nbsp;像我们一直在为其他软件做的命令这样做。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	如果我们决定这 php-fpm 是我们需要的，我们可以输入：
+</p>
+<pre>sudo yum install php-fpm</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	如果要安装多个模块，可以按照以下&nbsp;yum install&nbsp;命令，列出每个模块，按空格分隔：
+</p>
+<pre>sudo yum install 模块1 模块2 ...</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	此时，您的 LAMP 已安装并配置。我们仍然应该测试我们的 PHP。
+</p>
+<h3 style="color:#333333;font-family:tahoma, 宋体;text-align:justify;background-color:#FAFAFC;">
+	第四步 – 在Web服务器上测试PHP处理
+</h3>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	为了测试我们的系统正确配置 PHP，我们可以创建一个非常基本的 PHP 脚本。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	我们将调用这个脚本info.php。为了使Apache能够找到文件并正确地提供该文件，它必须保存到一个特定的目录，称为“Web根目录”。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	在 CentOS 7 中，此目录位于 /var/www/html/。我们可以通过键入以下内容在该位置创建文件：
+</p>
+<pre>sudo vi /var/www/html/info.php</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	这将打开一个空白文件。我们想在文件中放入以下文本，这是有效的PHP代码：
+</p>
+<pre>&lt;?php phpinfo(); ?&gt;</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	完成后，保存并关闭文件。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	如果您正在运行防火墙，请运行以下命令以允许 HTTP 和 HTTPS 流量：
+</p>
+<pre>sudo firewall-cmd --permanent --zone=public --add-service=http</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	sudo firewall-cmd –permanent –zone=public –add-service=https sudo firewall-cmd –reload
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	现在我们可以测试我们的 Web 服务器是否可以正确显示 PHP 脚本生成的内容。要想这样做，我们只需要在我们的网络浏览器中访问这个页面。您将需要您的服务器的公共 IP 地址。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	您要访问的地址将是：
+</p>
+<pre>http://your_server_IP_address/info.php</pre>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	你所来的页面应该是这样的：
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	<img class="alignnone size-full wp-image-129" src="https://www.linuxidc.com/upload/2017_05/170517095045262.png" alt="" width="605" height="561" /> 
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	这个页面基本上是从 PHP 的角度给出你关于你的服务器的信息。它对调试非常有用，并确保正确应用您的设置。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	如果这是成功的，那么您的 PHP 正在按预期工作。
+</p>
+<h3 style="color:#333333;font-family:tahoma, 宋体;text-align:justify;background-color:#FAFAFC;">
+	结论
+</h3>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	现在，您已经安装了 LAMP 服务，您可以选择下一步做什么。
+</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-size:14px;text-align:justify;background-color:#FAFAFC;">
+	<span style="font-size:small;"><strong>本文永久更新链接地址</strong></span>：<a href="https://www.linuxidc.com/Linux/2017-05/143868.htm">http://www.linuxidc.com/Linux/2017-05/143868.htm</a> 
+</p>

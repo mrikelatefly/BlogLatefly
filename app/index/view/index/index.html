@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+<!---头部引用--->
+{include file='index/common/htmlhead'}
+</head>
+<body>
+<header>
+  <!---头像以及联系方式-->
+  {include file='index/common/header'}
+  <!----导航栏----->
+  {include file='index/common/navigate'}
+</header>
+
+
+<article>
+  <main class="r_box">
+    <div class="bloglist">
+      {volist name="article" id="item"}
+          {if condition="$item.img_url eq null or $item.img_url eq ''"}
+            <li>
+              <h3><a href="/Info/index/id/{$item.id}.html" target="_blank">{$item.title}</a></h3>
+              <h3><a style="font-weight:normal;" href="/Info/index/id/{$item.id}.html" target="_blank">{$item.summary}</a>
+                <p class="feed-date">
+                  <span class="fd01">
+                    [{volist name="selectType" id="type"}{if condition="$type.type2 eq $item.type "}
+                        {if condition="$type.value2 neq '0' "}
+                          {$type.value2}
+                    {/if}{/if}{/volist}]
+                  </span>
+                  <span class="fd01"><a href="/">{$item.release_time|backDate}</a></span>
+                  <span class="fd01">作者:{$item.from_user}</span>
+                  <span class="fd01">阅读({$item.views})</span>
+                  <span class="fd01">喜欢({$item.ulove})</span>
+                </p>
+            </li>
+          {else/}
+              <li><i><a href="/Info/index/id/{$item.id}.html" title="{$item.title}"><img width='200px' height='100px' src="{$item.img_url|backArray|backImg=###,0}" alt="{$item.title}"></a></i>
+                <h3><a href="/Info/index/id/{$item.id}.html" target="_blank">{$item.title}</a></h3>
+                <h3><a style="font-weight:normal;" href="/Info/index/id/{$item.id}.html" target="_blank">{$item.summary}</a>
+                  <p class="feed-date">
+                      <span class="fd01">
+                      [{volist name="selectType" id="type"}{if condition="$type.type2 eq $item.type "}
+                        {if condition="$type.value2 neq '0' "}
+                        {$type.value2}
+                      {/if}{/if}{/volist}]
+                      </span>
+                      <span class="fd01"><a href="/">{$item.release_time|backDate}</a></span>
+                      <span class="fd01">作者:{$item.from_user}</span>
+                      <span class="fd01">阅读({$item.views})</span>
+                      <span class="fd01">喜欢({$item.ulove})</span>
+                  </p>
+              </li>
+          {/if}
+        
+      {/volist}
+      {include file='index/common/pagebutton'}
+    </div>
+  </main>
+ 
+  <!----侧边栏-->
+  {include file='index/common/rightbox'}
+  
+</article>
+<div class="blank"></div>
+<!---footer-->
+{include file='index/common/footer'}
+</body>
+</html>

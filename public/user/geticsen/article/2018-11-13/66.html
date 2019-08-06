@@ -1,0 +1,101 @@
+<ul>
+	<li>
+		有很多开源框架在github上选择thinkphp是因为它比较简单易上手
+	</li>
+</ul>
+<ol>
+	<li>
+		thinkphp5入门基础 <a target="_bank" href="https://www.imooc.com/learn/832">https://www.imooc.com/learn/832</a> 
+	</li>
+	<li>
+		<span>thinkphp5模型入门</span> <a target="_bank" href="https://www.imooc.com/learn/854">https://www.imooc.com/learn/854</a><br />
+	</li>
+	<li>
+		<p>
+			学完之后 架设服务器
+		</p>
+	</li>
+	<li>
+		<p>
+			服务器有很多选择&nbsp; 我用的是阿里云（毕竟本人是学生没那么多钱）
+		</p>
+	</li>
+	<li>
+		<p>
+			如图服务器要开启&nbsp; 重写
+		</p>
+	</li>
+	<p>
+		<img src="/uploads/image/20181112/20181112120843_80791.png" width="100%" alt="" /> 
+	</p>
+	<li>
+		<p>
+			<directory "你的thinkphp="" public目录"=""><br />
+#<br />
+# Possible values for the Options directive are "None", "All",<br />
+# or any combination of:<br />
+#&nbsp; &nbsp;Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews<br />
+#<br />
+# Note that "MultiViews" must be named *explicitly* --- "Options All"<br />
+# doesn't give it to you.<br />
+#<br />
+# The Options directive is both complicated and important.&nbsp; Please see<br />
+# http://httpd.apache.org/docs/2.4/mod/core.html#options<br />
+# for more information.<br />
+#<br />
+Options&nbsp; FollowSymLinks ExecCGI<br />
+#<br />
+# AllowOverride controls what directives may be placed in .htaccess files.<br />
+# It can be "All", "None", or any combination of the keywords:<br />
+#&nbsp; &nbsp;Options FileInfo AuthConfig Limit<br />
+#<span> AllowOverride None&nbsp; 改为<span> AllowOverride All </span></span><br />
+AllowOverride All<br />
+<br />
+#<br />
+# Controls who can get stuff from this server.<br />
+#<br />
+Require all granted
+		</p>
+	</li>
+	<li>
+		<p>
+			在public目录下&nbsp; 建立&nbsp; .htaccess 文件 如下所示（没有文件名只有<span>.htaccess后缀</span>）
+		</p>
+	</li>
+	<p>
+		<img src="/uploads/image/20181112/20181112121725_75092.png" width="100%" alt="" /> 
+	</p>
+	<li>
+		<p>
+			<ifmodule mod_rewrite.c="">
+		</p>
+	</li>
+	<p>
+		Options +FollowSymlinks -Multiviews<br />
+RewriteEngine On<br />
+RewriteCond %{REQUEST_FILENAME} !-d<br />
+RewriteCond %{REQUEST_FILENAME} !-f<br />
+RewriteRule ^(.*)$ index.php?/$1 [QSA,PT,L]
+	</p>
+	<li>
+		<p>
+			到此为止服务器基本配置完成
+		</p>
+	</li>
+	<li>
+		<p>
+			访问 <a href="www.encai.online">www.encai.online</a>(我的个人博客)如下所示
+		</p>
+	</li>
+	<li>
+		<p>
+			<img src="/uploads/image/20181112/111.png" width="100%" alt="" /> 
+		</p>
+	</li>
+	<div>
+		<br />
+	</div>
+	<p>
+		<br />
+	</p>
+</ol>

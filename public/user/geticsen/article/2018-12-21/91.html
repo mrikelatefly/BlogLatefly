@@ -1,0 +1,278 @@
+<p>
+	<span style="font-size:16px;">1.前期准备，oss的sdk下载 地址 </span><span style="color:#003399;"><a href="https://www.alibabacloud.com/help/zh/doc-detail/32169.htm" target="_blank"><span style="font-size:16px;color:#003399;">https://www.alibabacloud.com/help/zh/doc-detail/32169.htm</span></a></span> 
+</p>
+<p>
+	<span style="font-size:16px;">2.下载对应的pdf文档阅读，还有对应的文件（php版本的sdk）</span> 
+</p>
+<p>
+	<img width="100%" src="/uploads/image/20181221/20181221121315_49114.jpg" alt="" /> 
+</p>
+<p>
+	php版本的sdk解压以后的结构如图：
+</p>
+<p>
+	<img width="100%" src="/uploads/image/20181221/20181221121350_19422.jpg" alt="" /> 
+</p>
+<p>
+	<span style="font-size:16px;">3.将oss文件夹整个复制到thinkphp的public同级的extend文件夹下</span> 
+</p>
+<p>
+	如图：
+</p>
+<p>
+	<img width="1283" src="/uploads/image/20181221/20181221121752_97211.png" alt="" height="366" title="" align="" /> 
+</p>
+<p>
+	<br />
+</p>
+<p>
+	你如果不懂oss sdk的用法建议去看一下 [<span style="color:#333333;font-family:" background-color:#ffffff;font-size:12px;"=""><a href="http://www.encai.online/Info/index/id/82.html" target="_blank"><span style="color:#003399;">阿里云oss的基本使用，文件上传，文件上传到指定目录（文件夹）</span></a></span>]
+</p>
+<p>
+	如果你不太懂thinkphp5的用法那你得恶补知识了
+</p>
+<p>
+	<span style="font-size:16px;">4.最后在你定义的app（你自己定义的应用文件夹）建立一个控制器：</span><img width="100%" src="http://www.encai.online/uploads/image/20181221/20181221121415_55483.png" alt="" /> 
+</p>
+<p style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas,;">
+	<span style="color:#4ec9b0;">Filemanager源码如下：</span>
+</p>
+<p style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas,;">
+	<span style="color:#4ec9b0;"></span>
+</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, &quot;font-size:14px;">
+	<div>
+		<span style="color:#569cd6;">&lt;?php</span>
+	</div>
+<br />
+	<div>
+		<span style="color:#569cd6;">namespace</span> <span style="color:#4ec9b0;">app\admin\controller</span>;
+	</div>
+	<div>
+		<span style="color:#569cd6;">use</span> OSS\<span style="color:#4ec9b0;">OssClient</span>;
+	</div>
+	<div>
+		<span style="color:#569cd6;">use</span> OSS\Core\<span style="color:#4ec9b0;">OssException</span>;
+	</div>
+	<div>
+		<span style="color:#569cd6;">class</span> <span style="color:#4ec9b0;">Filemanager</span>
+	</div>
+	<div>
+		{
+	</div>
+	<div>
+		<span style="color:#569cd6;">public</span> <span style="color:#569cd6;">function</span> <span style="color:#dcdcaa;">index</span>()
+	</div>
+	<div>
+		{
+	</div>
+	<div>
+		<span style="color:#6a9955;">//return view("Index/fileUpload");</span>
+	</div>
+	<div>
+	</div>
+	<div>
+		<span style="color:#6a9955;">// 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。</span>
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$accessKeyId</span> = <span style="color:#ce9178;">"你的<span style="font-family:Consolas, &quot;font-size:14px;background-color:#1E1E1E;color:#9CDCFE;">accessKeyId</span><span style="color:#D4D4D4;font-family:Consolas, &quot;font-size:14px;background-color:#1E1E1E;">&nbsp;</span>"</span>;
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$accessKeySecret</span> = <span style="color:#ce9178;">"你的<span style="font-family:Consolas, &quot;font-size:14px;background-color:#1E1E1E;color:#9CDCFE;">accessKeySecret</span><span style="color:#D4D4D4;font-family:Consolas, &quot;font-size:14px;background-color:#1E1E1E;">&nbsp;</span>"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">// Endpoint以杭州为例，其它Region请按实际情况填写。</span>
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$endpoint</span> = <span style="color:#ce9178;">"http://oss-cn-shanghai.aliyuncs.com"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">// 存储空间名称</span>
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$bucket</span>= <span style="color:#ce9178;">"get-blog"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">// 文件名称</span>
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$object</span> = <span style="color:#ce9178;">"img/123.jpg"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">// &lt;yourLocalFile&gt;由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt</span>
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$filePath</span> = <span style="color:#ce9178;">"C:</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">Users</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">ZEC--</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">Desktop</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">QQ图片20181119115842.jpg"</span>;
+	</div>
+	<div>
+		<span style="color:#c586c0;">try</span>{
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$ossClient</span> = <span style="color:#569cd6;">new</span> <span style="color:#4ec9b0;">OssClient</span>(<span style="color:#9cdcfe;">$accessKeyId</span>, <span style="color:#9cdcfe;">$accessKeySecret</span>, <span style="color:#9cdcfe;">$endpoint</span>);
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$ossClient</span>-&gt;<span style="color:#dcdcaa;">uploadFile</span>(<span style="color:#9cdcfe;">$bucket</span>, <span style="color:#9cdcfe;">$object</span>, <span style="color:#9cdcfe;">$filePath</span>);
+	</div>
+	<div>
+		}<span style="color:#c586c0;">catch</span>(<span style="color:#4ec9b0;">OssException</span> <span style="color:#9cdcfe;">$e</span>) {
+	</div>
+	<div>
+		<span style="color:#dcdcaa;">printf</span>(<span style="color:#569cd6;">__FUNCTION__</span> . <span style="color:#ce9178;">": FAILED</span><span style="color:#d7ba7d;">\n</span><span style="color:#ce9178;">"</span>);
+	</div>
+	<div>
+		<span style="color:#dcdcaa;">printf</span>(<span style="color:#9cdcfe;">$e</span>-&gt;<span style="color:#dcdcaa;">getMessage</span>() . <span style="color:#ce9178;">"</span><span style="color:#d7ba7d;">\n</span><span style="color:#ce9178;">"</span>);
+	</div>
+	<div>
+		<span style="color:#c586c0;">return</span>;
+	</div>
+	<div>
+		}
+	</div>
+	<div>
+		<span style="color:#dcdcaa;">echo</span> <span style="color:#ce9178;">"&lt;a href='http://"</span>.<span style="color:#9cdcfe;">$bucket</span>.<span style="color:#ce9178;">".oss-cn-shanghai.aliyuncs.com/"</span>.<span style="color:#9cdcfe;">$object</span>.<span style="color:#ce9178;">"'&gt;1321321&lt;/a&gt;"</span>;
+	</div>
+	<div>
+		}
+	</div>
+<br />
+	<div>
+		}
+	</div>
+</div>
+<p>
+	最后效果如图：
+</p>
+<p>
+	<img src="/uploads/image/20181221/20181221121527_77743.png" alt="" />
+</p>
+<p>
+	<br />
+</p>
+<p style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"=""> <span style="color:#4ec9b0;"></span> 
+	</p>
+<div style="color:#D4D4D4;background-color:#1E1E1E;font-family:Consolas, " font-size:14px;"="">
+	<div>
+		<span style="color:#569cd6;"><!--?php</span> 
+	</div>
+<br />
+	<div>
+		<span style="color:#569cd6;">namespace</span> <span style="color:#4ec9b0;">app\admin\controller</span>;
+	</div>
+	<div>
+		<span style="color:#569cd6;">use</span> OSS\<span style="color:#4ec9b0;">OssClient</span>;
+	</div>
+	<div>
+		<span style="color:#569cd6;">use</span> OSS\Core\<span style="color:#4ec9b0;">OssException</span>;
+	</div>
+	<div>
+		<span style="color:#569cd6;">class</span> <span style="color:#4ec9b0;">Filemanager</span> 
+	</div>
+	<div>
+		{
+	</div>
+	<div>
+		<span style="color:#569cd6;">public</span> <span style="color:#569cd6;">function</span> <span style="color:#dcdcaa;">index</span>()
+	</div>
+	<div>
+		{
+	</div>
+	<div>
+		<span style="color:#6a9955;">//return view("Index/fileUpload");</span> 
+	</div>
+	<div>
+	</div>
+	<div>
+		<span style="color:#6a9955;">// 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。</span> 
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$accessKeyId</span> = <span style="color:#ce9178;">"你的keyid"</span>;
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$accessKeySecret</span> = <span style="color:#ce9178;">"你的keysecert"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">// Endpoint以杭州为例，其它Region请按实际情况填写。</span> 
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$endpoint</span> = <span style="color:#ce9178;">"http://oss-cn-shanghai.aliyuncs.com"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">// 存储空间名称</span> 
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$bucket</span>= <span style="color:#ce9178;">"get-blog"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">// 文件名称</span> 
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$object</span> = <span style="color:#ce9178;">"img/123.jpg"</span>;
+	</div>
+	<div>
+		<span style="color:#6a9955;">//由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt</span> 
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$filePath</span> = <span style="color:#ce9178;">"C:</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">Users</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">ZEC--</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">Desktop</span><span style="color:#d7ba7d;">\\</span><span style="color:#ce9178;">QQ图片20181119115842.jpg"</span>;
+	</div>
+	<div>
+		<span style="color:#c586c0;">try</span>{
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$ossClient</span> = <span style="color:#569cd6;">new</span> <span style="color:#4ec9b0;">OssClient</span>(<span style="color:#9cdcfe;">$accessKeyId</span>, <span style="color:#9cdcfe;">$accessKeySecret</span>, <span style="color:#9cdcfe;">$endpoint</span>);
+	</div>
+	<div>
+		<span style="color:#9cdcfe;">$ossClient</span>-><span style="color:#dcdcaa;">uploadFile</span>(<span style="color:#9cdcfe;">$bucket</span>, <span style="color:#9cdcfe;">$object</span>, <span style="color:#9cdcfe;">$filePath</span>);
+	</div>
+	<div>
+		}<span style="color:#c586c0;">catch</span>(<span style="color:#4ec9b0;">OssException</span> <span style="color:#9cdcfe;">$e</span>) {
+	</div>
+	<div>
+		<span style="color:#dcdcaa;">printf</span>(<span style="color:#569cd6;">__FUNCTION__</span> . <span style="color:#ce9178;">": FAILED</span><span style="color:#d7ba7d;">\n</span><span style="color:#ce9178;">"</span>);
+	</div>
+	<div>
+		<span style="color:#dcdcaa;">printf</span>(<span style="color:#9cdcfe;">$e</span>-><span style="color:#dcdcaa;">getMessage</span>() . <span style="color:#ce9178;">"</span><span style="color:#d7ba7d;">\n</span><span style="color:#ce9178;">"</span>);
+	</div>
+	<div>
+		<span style="color:#c586c0;">return</span>;
+	</div>
+	<div>
+		}
+	</div>
+	<div>
+		<span style="color:#dcdcaa;">echo</span> <span style="color:#ce9178;">"<a href="http://"</span>.<span style="color:#9cdcfe;">$bucket</span>.<span style="color:#ce9178;">".oss-cn-shanghai.aliyuncs.com/"</span>.<span style="color:#9cdcfe;">$object</span>.<span style="color:#ce9178;">"">1321321</a>"</span>;
+	</div>
+	<div>
+		}
+	</div>
+<br />
+	<div>
+		}
+	</div>
+		</div>
+		<p>
+			最终效果如图：
+		</p>
+		<p>
+			<img src="/uploads/image/20181221/20181221121527_77743.png" alt="" /> 
+		</p>
+		<p>
+			<span style="font-size:16px;">稍微总结一下：</span> 
+		</p>
+		<p>
+			<span style="font-size:16px;">1.thinkphp5会自动加载extend目录</span> 
+		</p>
+		<p>
+			<span style="font-size:16px;">2.使用的时候只需用命名空间的方式引入</span> 
+		</p>
+		<p>
+			<span style="font-size:16px;">3.整合使用和文档介绍的没什么区别，不过你得注意命名空间的问题</span> 
+		</p>
+		<p>
+			<br />
+		</p>
+		<p>
+			<br />
+		</p>
+--></span>
+	</div>
+		</div>

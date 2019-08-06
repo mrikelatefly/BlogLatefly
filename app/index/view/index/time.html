@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+{include file='index/common/htmlhead'/}
+
+</head>
+<body>
+<header>
+{include file='index/common/header'/}
+
+{include file='index/common/navigate'/}
+</header>
+<article>
+  <main class="r_box">
+     <div class="timebox">
+     
+    <ul id="list" style="display:block;">
+        
+    </ul>
+    <ul id="list2"></ul>
+      {volist name="article" id="item"}
+        <li><span>{$item.release_time|backDate}</span><i><a href="/Info/index/id/{$item.id}.html" target="_blank">{$item.title}</a></i></li>
+      {/volist} 
+    </div>
+    {include file='index/common/pagebutton'}
+  </main>
+{include file='index/common/rightbox'/}
+</article>
+<div class="blank"></div>
+{include file='index/common/footer'/}
+</body>
+</html>

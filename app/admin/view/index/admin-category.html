@@ -1,0 +1,209 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+	{include file='index/common/ad_htmlhead'}
+	<title>文章管理 - 管理员管理</title>
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file='index/common/ad_header'}
+<!--_menu 作为公共模版分离出去-->
+{include file='index/common/ad_aside'}
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box">
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+				<span class="select-box inline">
+				<select name="" class="select">
+					<option value="0">全部分类</option>
+					<option value="1">分类一</option>
+					<option value="2">分类二</option>
+					<option value="3">全部分类</option>
+					<option value="4">分类一</option>
+					<option value="5">分类二</option>
+				</select>
+				</span>
+				日期范围：
+				<input type="text" onfocus="WdatePicker" id="logmin" class="input-text Wdate" style="width:120px;">
+				-
+				<input type="text" onfocus="WdatePicker" id="logmax" class="input-text Wdate" style="width:120px;">
+				<input type="text" name="" id="" placeholder=" 资讯名称" style="width:250px" class="input-text">
+				<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜资讯</button>
+			</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<span class="l">
+				<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 删除分类</a>
+				<a class="btn btn-primary radius" data-title="添加分类" href="/Addarticle"><i class="Hui-iconfont">&#xe600;</i> 添加分类</a>
+				</span>
+				<span class="r">共有数据：<strong>54</strong> 条</span>
+			</div>
+			<div class="mt-20">
+				<table class="table table-border table-bordered table-bg table-hover table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="50"><input type="checkbox" name="" value=""></th>
+							<th width="80">id</th>
+							<th width="80">type1</th>
+							<th width="80">value1</th>
+							<th width="80">type2</th>
+							<th width="80">value2</th>
+							<th width="80">操作</th>
+						</tr>
+					</thead>
+					{volist name="selectTypet" id="type"}
+						<tbody>
+							<tr class="text-c" id="{$type.id}" contentEditable="false">
+								<td><input type="checkbox" value="" name=""/></td>
+								<td style="background:darkgrey;">{$type.id}</td>
+								<td>{$type.type1}</td>
+								<td>{$type.value1}</td>
+								<td>{$type.type2}</td>
+								<td>{$type.value2}</td>
+								<td class="f-14 td-manage">
+									<a style="text-decoration:none" class="ml-5" title="编辑" onClick="chart_eidt(this,{$type.id})" id="edit"><i class="Hui-iconfont">&#xe6df;</i></a>
+									<!-- <a style="text-decoration:none" class="ml-5" onClick="article_del(this,'10')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a> -->
+								</td>
+							</tr>
+						</tbody>
+					  {/volist}
+				</table>
+				</div>
+		</article>
+	</div>
+</section>
+
+<!--_footer 作为公共模版分离出去-->
+{include file='index/common/ad_script'}
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="/static/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/admin/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+var thisId='';
+
+$('.table-sort').dataTable({
+	"aaSorting": [[ 1, "desc" ]],//默认第几个排序
+	"bStateSave": true,//状态保存
+	"aoColumnDefs": [
+		//{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+		{"orderable":false,"aTargets":[0,3]}// 不参与排序的列
+	]
+});
+$(function(){
+	// $(".table").on("click","td",function(){
+	// 	var tdDom = $(this);
+	// 	//保存初始值
+	// 	var tdPreText = $(this).text();
+	// 	//给td设置宽度和给input设置宽度并赋值
+	// 	$(this).width(100).html("<input type='text'>").find("input").width(100).val(tdPreText);
+	// 	//失去焦点的时候重新赋值
+	// 	var inputDom = $(this).find("input");
+	// 	inputDom.blur(function(){
+	// 		var newText = $(this).val();
+	// 		$(this).remove();
+	// 		tdDom.text(newText);
+	// 	});
+	// });
+});
+/*资讯-发布*/
+function char_sent(obj,id){
+	layer.confirm('确认更新么？',function(index){
+		var data=new Array(),i=0;
+		$("#"+id+'').children("td").each(function(){
+			data[++i]=$(this).html();
+			//console.log($(this).html());
+			//alert($(this).text());
+		});
+		//获取到表格数据
+		var chartdata=new Array(data[2],data[3],data[4],data[5],data[6]);
+		//console.log(chartdata);
+
+		var str="<td><input type='checkbox' value='' name=''/></td>"+
+		"<td style='background:darkgrey;'>"+chartdata[0]+"</td>"+
+		"<td>"+chartdata[1]+"</td>"+
+		"<td>"+chartdata[2]+"</td>"+
+		"<td>"+chartdata[3]+"</td>"+
+		"<td>"+chartdata[4]+"</td>"+
+		"<td class='f-14 td-manage'>"+
+		"<a style='text-decoration:none' class='ml-5' title='编辑' onClick='chart_eidt(this,"+id+")'><i class='Hui-iconfont'>&#xe6df;</i></a>"+
+		"</td>";
+		$(obj).parents("tr").html(str);
+
+		//发送数据
+		var formData = new FormData();
+		
+		formData.append('edit',"edit");
+		formData.append('id',parseInt(chartdata[0]));
+		formData.append('type1',chartdata[1]);
+		formData.append('value1',chartdata[2]);
+		formData.append('type2',chartdata[3]);
+		formData.append('value2',chartdata[4]);
+		sentData(formData);
+		//console.log(formData);
+		layer.msg('已更改!',{icon: 6,time:1000});
+	});
+}
+
+function chart_eidt(obj,id)
+{
+	//变换图标更改表格属性 contentEditable="true"
+	//$(obj).parents("tr").find(".td-manage").html("<a style='text-decoration:none' onClick='char_sent(this,"+id+")' href='javascript:;' title='编辑完成'><i class='Hui-iconfont'>&#xe603;</i></a>");
+	
+
+	var data=new Array(),i=0;
+	$("#"+id+'').children("td").each(function(){
+		data[++i]=$(this).html();
+		//console.log($(this).html());
+		//alert($(this).text());
+	});
+	//获取到表格数据
+	var mydata=new Array(data[2],data[3],data[4],data[5],data[6]);
+	//console.log(mydata);
+
+	//首先获取到选项值，然后添加到表格选项中实现更改
+	var str="<td><input type='checkbox' value='' name=''/></td>"+
+	"<td style='background:darkgrey;'>"+mydata[0]+"</td>"+
+	"<td contentEditable='true'>"+mydata[1]+"</td>"+
+	"<td contentEditable='true'>"+mydata[2]+"</td>"+
+	"<td contentEditable='true'>"+mydata[3]+"</td>"+
+	"<td contentEditable='true'>"+mydata[4]+"</td>"+
+	"<td class='f-14 td-manage'>"+
+	"<a style='text-decoration:none' onClick='char_sent(this,"+id+")' href='javascript:;' title='完成更改'><i class='Hui-iconfont'>&#xe603;</i></a>"+
+	"</td>";
+
+	$(obj).parents("tr").html(str);
+
+	
+	//$(obj).addClass("contentEditable='true'");
+	//$(obj).parents("tr").css("background","blue");
+}
+function sentData(formData)
+{
+	$.ajax({
+	url: '/admin.php/Category',
+    type: 'POST',
+	data: formData,
+	//这两个设置项必填
+	contentType: false,
+	processData: false,
+    dataType: 'json',
+    // calback: "callback",
+	// cache: false,
+	success: function(data){
+		console.log(data);
+		//layer.msg('已提交审核!',{icon:1,time:1000});
+	},
+	error:function(data) {
+		console.log(data.msg);
+		},
+	});	
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

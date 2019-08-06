@@ -1,0 +1,507 @@
+<div class="WordSection1">
+	<p class="MsoNormal">
+		<strong>1.使用 WinSock API 的编程，应该了解 TCP/IP 的基础知识。</strong> 
+	</p>
+	<p class="MsoNormal">
+		<strong>2.TCP/IP 协议与 WinSock 网络编程接口的关系</strong> 
+	</p>
+	<p class="MsoNormal" style="text-align:justify;text-indent:21.0pt;">
+		WinSock 并不是一种网络协议，它只是一个网络编程接口，也就是说，它不是协议，但是它可以访问很多种网络协议，你可以把它当作一些协议的封装。现在的 WinSock 已经基本上实现了与协议无关。你可以使用 WinSock 来调用多种协议的功能。那么，WinSock 和 TCP/IP 协议到底是什么关系呢？实际上，WinSock 就是 TCP/IP 协议的一种封装，你可以通过调用 WinSock 的接口函数来调用 TCP/IP 的各种功能.例如我想用 TCP/IP 协议发送数据，你就可以使用 WinSock 的接口函数 Send()来调用 TCP/IP 的发送数据功能，至于具体怎么发送数据，WinSock 已经帮你封装好了这种功能。
+	</p>
+	<p class="MsoNormal">
+		<strong>3．WinSock 编程简单流程</strong> 
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		WinSock 编程分为服务器端和客户端两部分，TCP 服务器端的大体流程如下：
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		对于任何基于 WinSock 的编程首先必须要初始化 WinSock DLL 库。
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		int WSAStarup( WORD
+wVersionRequested,LPWSADATA lpWsAData )。
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		wVersionRequested 是我们要求使用的 WinSock 的版本。
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		调用这个接口函数可以初始化 WinSock 。
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		然后必须创建一个套接字(Socket)。
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		SOCKET Socket(int af,int type,int protocol);
+	</p>
+	<p class="MsoNormal" style="text-align:justify;text-indent:21.0pt;">
+		套接字可以说是 WinSock 通讯的核心。WinSock 通讯的所有数据传输，都是通过套接字来完成的，套接字包含了两个信息，一个是 IP 地址，一个是 Port 端口号，使用这两个信息，就可以确定网络中的任何一个通讯节点。
+	</p>
+	<p class="MsoNormal" style="margin-left:21.0pt;">
+		当调用了 Socket()接口函数创建了一个套接字后，必须把套接字与你需要进行通讯的地址建立联<span style="font-size:12px;">系，可以通过绑定函数 bind 来实现这种联系。</span> 
+	</p>
+</div>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	int bind(SOCKET s,const struct sockaddr FAR*
+name,int namelen) ;
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	<br />
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	struct sockaddr_in{
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	short sin_family ;
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	u_short sin_port;
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	struct in_addr sin_addr ;
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	char sin_sero[8] ;
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	}
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	就包含了需要建立连接的本地的地址，包括地址族、IP 和端口信息。sin_family 字段必须把它设
+</p>
+<p class="MsoNormal" style="margin-left:13.45pt;text-indent:-13.45pt;">
+	为 AF_INET，这是告诉 WinSock 使用的是 IP 地址族。sin_port 就是要用来通讯的端口号。sin_addr 就
+</p>
+<p class="MsoNormal" style="margin-left:.45pt;">
+	是要用来通讯的 IP 地址信息。
+</p>
+<p class="MsoNormal" style="margin-left:.45pt;text-align:justify;text-indent:21.0pt;">
+	在这里，必须还得提一下有关'大头(big-endian)'小头(little-endian)'。因为各种不同的计算机处理数据时的方法是不一样的，Intel X86 处理器上是用'小头'形式来表示多字节的编号，就是把低字节放在前面，把高字节放在后面，而互联网标准却正好相反，所以，必须把主机字节转换成网络字节的顺序。
+</p>
+<p class="MsoNormal" style="margin-left:.45pt;">
+	WinSock API 提供了几个函数。
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	把主机字节转化成网络字节的函数; u_long htonl(u_long hostlong); u_short
+htons(u_short hostshort);
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	把网络字节转化成主机字节的函数; u_long ntohl(u_long netlong); u_short
+ntohs(u_short netshort) ;
+</p>
+<p class="MsoNormal" style="margin-left:.45pt;text-indent:21.0pt;">
+	这样，设置 IP 地址和 port 端口时，就必须把主机字节转化成网络字节后，才能用 Bind()函数来绑定套接字和地址。
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	当绑定完成之后，服务器端必须建立一个监听的队列来接收客户端的连接请求。 int listen(SOCKET s,int backlog);
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	这个函数可以把套接字转成监听模式。
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	如果客户端有了连接请求，我们还必须使用
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	int accept(SOCKET s,struct sockaddr FAR*
+addr,int FAR* addrlen);
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	来接受客户端的请求。
+</p>
+<p class="MsoNormal" style="margin-left:.45pt;text-indent:21.0pt;">
+	现在基本上已经完成了一个服务器的建立，而客户端的建立的流程则是初始化 WinSock，然后创建 Socket 套接字，再使用
+</p>
+<p class="MsoNormal" style="margin-left:21.45pt;">
+	int connect(SOCKET s,const struct sockaddr
+FAR* name,int namelen) ;
+</p>
+<p class="MsoNormal">
+	来连接服务端。
+</p>
+<p class="MsoNormal">
+	<img width="100%" src="/uploads/image/20181212/20181212114255_68159.jpg" title="socket流程" alt="socket流程" /> 
+</p>
+<p class="MsoNormal">
+	<br />
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>客户端编程的步骤：</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>1：加载套接字库，创建套接字(WSAStartup()/socket())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>2：向服务器发出连接请求(connect())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>3：和服务器端进行通信(send()/recv())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>4：关闭套接字，关闭加载的套接字库(closesocket()/WSACleanup())。</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>服务器端编程的步骤：</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>1：加载套接字库，创建套接字(WSAStartup()/socket())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>2：绑定套接字到一个
+IP 地址和一个端口上(bind())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>3：将套接字设置为监听模式等待连接请求(listen())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>4：请求到来后，接受连接请求，返回一个新的对应于此次连接的套接字(accept())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>5：用返回的套接字和客户端进行通信(send()/recv())；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>6：返回，等待另一连接请求；</strong> 
+</p>
+<p class="MsoNormal" style="margin-left:21.0pt;">
+	<strong>7：关闭套接字，关闭加载的套接字库(closesocket()/WSACleanup())。</strong> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	下面是一个全双工的客户端与服务端的<span>socket</span>编程<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	代码如下：<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	服务端：
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<br />
+</p>
+<pre class="prettyprint lang-cpp">#include  <stdio.h>
+
+#include  <winsock2.h>
+
+#include <windows.h>
+
+#pragma comment(lib,"ws2_32.lib")
+
+WORD wVersionRequested;
+
+WSADATA wsaData;
+
+int err;
+
+SOCKET sockSrv;
+
+SOCKADDR_IN addrSrv;
+
+SOCKADDR_IN addrClient;
+
+int len=sizeof(SOCKADDR);
+
+//server
+
+/**
+
+server list 最大二十个
+
+*/
+
+SOCKET sockConn[20];
+
+//线程池
+
+HANDLE hThread[20];
+
+//list length
+
+int sockLen=0;
+
+//accept message
+
+DWORD WINAPI clientSay(LPVOID lpParamter)
+
+{
+
+int temp=sockLen-1;
+
+int status;
+
+char recvBuf[50];
+
+while(1){
+
+status=recv(sockConn[temp],recvBuf,50,0);
+
+if(status!=-1){
+
+printf("Client %d:%s\n",temp,recvBuf);
+
+}else{
+
+//断开连接异常
+
+break;
+
+}
+
+}
+
+return 0L;
+
+}
+
+DWORD WINAPI ConectAccept(LPVOID lpParamter)
+
+{
+
+if(sockLen&lt;=19){ sockConn[sockLen]=accept(sockSrv,(SOCKADDR*)&amp;addrClient,&amp;len); //创建接收线程 hThread[sockLen] = CreateThread(NULL, 0, clientSay, NULL, 0, NULL); sockLen=sockLen+1; printf("%d connect ok\n",sockLen+1); } return 0L; } //close void closeSock(int i){ closesocket(sockConn[i]); CloseHandle(hThread[i]); } int main() { wVersionRequested = MAKEWORD( 1, 1 ); err = WSAStartup( wVersionRequested, &amp;wsaData ); if ( err != 0 ) { return 0; } if ( LOBYTE( wsaData.wVersion ) != 1 || HIBYTE( wsaData.wVersion ) != 1 ) { WSACleanup( ); return 0; } sockSrv=socket(AF_INET,SOCK_STREAM,0); addrSrv.sin_addr.S_un.S_addr=htonl(INADDR_ANY); addrSrv.sin_family=AF_INET; addrSrv.sin_port=htons(6000); bind(sockSrv,(SOCKADDR*)&amp;addrSrv,sizeof(SOCKADDR)); listen(sockSrv,5); len=sizeof(SOCKADDR); char sendBuf[50]; char recvBuf[50]; int flag=1; printf("waiting connect.........!\n"); //sprintf(sendBuf,"Welcome %s to here!",inet_ntoa(addrClient.sin_addr)); //启动接收连接线程 HANDLE hThread0 = CreateThread(NULL, 0, ConectAccept, NULL, 0, NULL); //启动线程 while(flag==1) { scanf("%s",sendBuf); if(sendBuf=="#"){ CloseHandle(hThread0); //CloseHandle(hThread1); } for(int i=0;i send(sockConn[i],sendBuf,50,0); } printf("Server:%s\n",sendBuf); } for(int i=0;i closeSock(i); } }</windows.h></winsock2.h></stdio.h></pre>
+<p>
+	<br />
+</p>
+<p>
+	<br />
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span style="font-size:12px;"> </span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span> </span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	客户端：
+</p>
+<pre class="prettyprint lang-cpp">#include  <stdio.h>
+
+#include  <winsock2.h>
+
+#include <windows.h>
+
+#pragma comment(lib,"ws2_32.lib")
+
+//client
+
+SOCKET sockClient;
+
+//
+
+DWORD WINAPI clientSay(LPVOID lpParamter)
+
+{
+
+char recvBuf[50];
+
+int status;
+
+while(1){
+
+status=recv(sockClient,recvBuf,50,0);
+
+if(status!=-1){
+
+printf("Client:%s\n",recvBuf);
+
+}else{
+
+//断开连接异常
+
+break;
+
+}
+
+}
+
+return 0L;
+
+}
+
+int main()
+
+{
+
+WORD wVersionRequested;
+
+WSADATA wsaData;
+
+int err;
+
+wVersionRequested = MAKEWORD( 1, 1 );
+
+err = WSAStartup( wVersionRequested, &amp;wsaData );
+
+if ( err != 0 )
+
+{
+
+return 0;
+
+}
+
+if ( LOBYTE( wsaData.wVersion ) != 1 || HIBYTE( wsaData.wVersion ) != 1 )
+
+{
+
+WSACleanup( );
+
+return 0;
+
+}
+
+sockClient=socket(AF_INET,SOCK_STREAM,0);
+
+SOCKADDR_IN addrSrv;
+
+printf("please input ip adress ");
+
+char ip[20];
+
+scanf("%s",ip);
+
+addrSrv.sin_addr.S_un.S_addr=inet_addr(ip);
+
+addrSrv.sin_family=AF_INET;
+
+addrSrv.sin_port=htons(6000);
+
+char recvBuf[50];
+
+char sendBuff[50];
+
+printf("connect server ............\n");
+
+connect(sockClient,(SOCKADDR*)&amp;addrSrv,sizeof(SOCKADDR));
+
+printf("connect ok\n");
+
+int flag=1;
+
+//start  Thread
+
+HANDLE hThread = CreateThread(NULL, 0, clientSay, NULL, 0, NULL);
+
+while(flag){
+
+scanf("%s",sendBuff);
+
+if(sendBuff=="#"){
+
+CloseHandle(hThread);
+
+}
+
+send(sockClient,sendBuff,50,0);
+
+printf("client:%s\n",sendBuff);
+
+}
+
+closesocket(sockClient);
+
+WSACleanup();
+
+}
+
+</windows.h></winsock2.h></stdio.h></pre>
+<p>
+	<br />
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<br />
+</p>
+<p>
+	最后效果如图：
+</p>
+<p>
+	<img width="100%" src="/uploads/image/20181212/20181212114257_95205.png" alt="" /> 
+</p>
+<p>
+	<br />
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	为了解决等待问题，我用了线程（如果你不太懂自行百度一下）<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	你可能会遇到的问题：<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	针对<span>codeblocks</span>，<span>vc</span>不会出现这个问题<span></span> 
+</p>
+<img width="100%" src="/uploads/image/20181212/20181212114255_30056.png" title="codeblock" alt="codeblock" /> 
+<p>
+	<br />
+</p>
+<p>
+	<br />
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	这是由于<span>codeblocks</span>没有加<span>ws2_32.lib</span>载库文件的问题（不要惊慌）也就是<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span>#pragma comment(lib,"ws2_32.lib")</span>这句预编译没有找到库文件导致的后面报错<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	这个库在<span>codeblocks</span>的根目录下<span> MinGW/ lib/libws2_32.a</span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	找到你的<span>codeblocks</span>的根目录（找到<span>cb</span>根目录的办法查看桌面<span>cb</span>图标的指向位置）<span></span> 
+</p>
+<p>
+	<img width="100%" src="/uploads/image/20181212/20181212114256_78935.png" title="位置" alt="位置" /> 
+</p>
+<p>
+	<br />
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	好了记住这个位置，然后在<span>cb</span>的当前工程，依次点击：<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span>Project –&gt;&gt;build options-&gt;&gt;linker&nbsp; setting</span>然后点击<span>add</span>然后找到<span>codeblocks</span>的根目录<span>/MinGW/ lib/libws2_32.a</span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<strong>还不懂就看图吧！！！！！！！！！！！！</strong><span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<img width="100%" src="/uploads/image/20181212/20181212114255_36344.png" alt="" /> <img width="100%" src="/uploads/image/20181212/20181212114256_62743.png" alt="" /> 
+</p>
+<br />
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<img width="100%" src="/uploads/image/20181212/20181212114256_37919.png" alt="" /> 
+</p>
+<br />
+<p>
+	<img width="100%" src="/uploads/image/20181212/20181212114255_31906.png" alt="" /> 
+</p>
+<p>
+	<br />
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	再然后一直<span>ok</span>（确定）<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	最后再编译一遍就好了，（第一次编译运行如图）：<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	<img width="100%" src="/uploads/image/20181212/20181212114256_69325.png" alt="" /> 
+</p>
+<p>
+	<br />
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	最后总结一下：<span></span> 
+</p>
+<p class="MsoNormal" style="text-indent:22.0pt;">
+	这个程序实在之前的程序基础上实现的比较简单，你可以根据自己的能力继续改编（我课设没那么多时间），要实现上面的程序，你需要足够了解网络，以及<span>windows</span>下的多线程编程。<span></span> 
+</p>

@@ -1,0 +1,26 @@
+<div class="pagelist pagebg">
+    {if condition="$page neq 1"}
+        <a  href="/{$property}/page/id/1.html" title="Total record">首页</a>&nbsp;
+    {/if}
+    {if condition="$page gt 1"}
+       <a  href="/{$property}/page/id/{$page-1}.html" title="Total record">上一页</a>&nbsp;
+    {/if}
+    {if condition="$page neq $end"}
+        <a href="/{$property}/page/id/{$page}.html"><b>{$page}</b></a>&nbsp;
+    {/if}
+    {if condition="($end -$page ) gt 6"}
+        {for start="$page+1" end="$page+6" step="1" name="i"} 
+            <a href="/{$property}/page/id/{$i}.html">{$i}</a>&nbsp;
+        {/for}
+    {else/}
+        {for start="$page+1" end="$end+1" step="1" name="i"} 
+            <a href="/{$property}/page/id/{$i}.html">{$i}</a>&nbsp;
+        {/for}
+    {/if}
+    {if condition="$page lt $end"}
+      <a href="/{$property}/page/id/{$page+1}.html">下一页</a>&nbsp;
+    {/if}
+    {if condition="$page neq $end"}
+      <a href="/{$property}/page/id/{$end}.html">尾页</a>
+    {/if}
+</div>

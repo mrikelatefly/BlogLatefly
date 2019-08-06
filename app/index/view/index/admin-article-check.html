@@ -1,0 +1,325 @@
+﻿<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+	{include file='index/common/ad_htmlhead'}
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+{include file='index/common/ad_header'}
+<!--_menu 作为公共模版分离出去-->
+{include file='index/common/ad_aside'}
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box">
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+				<span class="select-box inline">
+				<select name="" class="select">
+					<option value="0">全部分类</option>
+					<option value="1">分类一</option>
+					<option value="2">分类二</option>
+					<option value="3">全部分类</option>
+					<option value="4">分类一</option>
+					<option value="5">分类二</option>
+				</select>
+				</span>
+				日期范围：
+				<input type="text" onfocus="WdatePicker" id="logmin" class="input-text Wdate" style="width:120px;">
+				-
+				<input type="text" onfocus="WdatePicker" id="logmax" class="input-text Wdate" style="width:120px;">
+				<input type="text" name="" id="" placeholder=" 资讯名称" style="width:250px" class="input-text">
+				<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜资讯</button>
+			</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<span class="l">
+				<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+				<a class="btn btn-primary radius" data-title="添加文章" href="/Addarticle"><i class="Hui-iconfont">&#xe600;</i> 添加文章</a>
+				</span>
+				<span class="r">共有数据：<strong>54</strong> 条</span>
+			</div>
+			<div class="mt-20">
+				<table class="table table-border table-bordered table-bg table-hover table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="25"><input type="checkbox" name="" value=""></th>
+							<th width="80">文章ID</th>
+							<th>文章标题</th>
+							<th width="80">文章分类</th>
+							<th width="80">作者</th>
+							<th width="120">更新时间</th>
+							<th width="75">浏览次数</th>
+							<th width="60">发布状态</th>
+							<th width="120">操作</th>
+						</tr>
+					</thead>
+					{volist name="article" id="item"}
+							<tbody>
+								<tr class="text-c"></tr>
+									{if condition="$item.is_publish eq 0"/}
+										<td><input type="checkbox" value="" name=""></td>
+										<td>{$item.id}</td>
+										<td class="text-l"><a target='_blank' href="/Info/index/id/{$item.id}.html">{$item.title}</a></td>
+										<td>{$item.type}</td>
+										<td>{$item.from_user}</td>
+										<td>{$item.release_time}</td>
+										<td>{$item.views}</td>
+										<td class="td-status"><span class="label label-success radius">待审核</span></td>
+										<td class="f-14 td-manage">
+											<a style="text-decoration:none" onClick="article_check(this,'{$item.id}')" href="javascript:;" title="审核"><i class="Hui-iconfont">&#xe603;</i></a>
+										</td>
+									{else/}
+										<td><input type="checkbox" value="" name=""></td>
+										<td>{$item.id}</td>
+										<td class="text-l"><a style="cursor:pointer" class="text-primary" target='_blank' href="/Info/index/id/{$item.id}.html" title="查看">{$item.title}</a></td>
+										<td>{$item.type}</td>
+										<td>{$item.from_user}</td>
+										<td>{$item.release_time}</td>
+										<td>{$item.views}</td>
+										<td class="td-status"><span class="label label-danger radius">未通过</span></td>
+										<td class="f-14 td-manage"><a style="text-decoration:none" onClick="article_resubmitCheck(this,'{$item.id}')" href="javascript:;" title="提交审核"><i class="Hui-iconfont">&#xe603;</i></a></td>
+									{/if}		
+								</tr>
+							</tbody>
+					{/volist}
+				</table>
+			</div>
+		</article>
+	</div>
+</section>
+
+<!--_footer 作为公共模版分离出去-->
+{include file='index/common/ad_script'}
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="/static/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/admin/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+$('.table-sort').dataTable({
+	"aaSorting": [[ 1, "desc" ]],//默认第几个排序
+	"bStateSave": true,//状态保存
+	"aoColumnDefs": [
+		//{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+		{"orderable":false,"aTargets":[0,8]}// 不参与排序的列
+	]
+});
+
+/*资讯-添加*/
+// function article_add(title,url,w,h){
+// 	var index = layer.open({
+// 		type: 2,
+// 		title: title,
+// 		content: url
+// 	});
+// 	layer.full(index);
+// }
+/*资讯-编辑*/
+function article_edit(title,url,id,w,h){
+	var index = layer.open({
+		type: 2,
+		title: title,
+		content: url
+	});
+	layer.full(index);
+}
+/*资讯-删除*/
+
+
+
+function article_del(obj,id){
+	layer.confirm('确认要删除吗？',function(index){
+		var formData = new FormData();
+		formData.append('operateType',"delete");
+		formData.append('articleId',parseInt(id));
+		$.ajax({
+			type: 'POST',
+			url: '/Articlemanage',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+			success: function(data){
+				console.log(data);
+				$(obj).parents("tr").remove();
+				layer.msg('已删除!',{icon:1,time:1000});
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});	
+	});
+}
+/*再次提交*/
+function article_resubmitCheck(obj,id){
+	layer.confirm('确认提交审核吗？',function(index){
+		var formData = new FormData();
+		formData.append('operateType',"resubmitCheck");
+		formData.append('articleId',parseInt(id));
+		$.ajax({
+			type: 'POST',
+			url: '/Articlemanage',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+			success: function(data){
+				$(obj).parents("tr").find(".td-manage").prepend('');
+				$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">待审核</span>');
+				$(obj).remove();
+				layer.msg('已提交待审核！', {icon:5,time:1000});
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});	
+	});
+}
+/*资讯-审核*/
+function article_check(obj,id){
+	layer.confirm('审核文章？', {
+		btn: ['通过','不通过','取消'], 
+		shade: false,
+		closeBtn: 0
+	},
+	function(){
+		var formData = new FormData();
+		formData.append('operateType',"check");
+		formData.append('articleId',parseInt(id));
+		$.ajax({
+			type: 'POST',
+			url: '/Adminarticlecheck',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+			success: function(data){
+				$(obj).parents("tr").find(".td-manage").prepend('<a class="c-primary" href="#" title="已通过审核">已通过审核</a>');
+				$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已通过</span>');
+				$(obj).remove();
+				$(obj).parents("tr").remove();
+				layer.msg('已发布', {icon:6,time:1000});
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});	
+
+	},
+	function(){
+		var formData = new FormData();
+		formData.append('operateType',"uncheck");
+		formData.append('articleId',parseInt(id));
+		$.ajax({
+			type: 'POST',
+			url: '/Adminarticlecheck',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+			success: function(data){
+				$(obj).parents("tr").find(".td-manage").prepend('');
+				$(obj).parents("tr").find(".td-status").html('<span class="label label-danger radius">未通过</span>');
+				$(obj).remove();
+				
+				layer.msg('已发布', {icon:6,time:1000});
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});
+		
+	});	
+}
+/*资讯-下架*/
+function article_unPublish(obj,id){
+	layer.confirm('确认要下架吗？',function(index){
+		var formData = new FormData();
+		formData.append('operateType',"unPublish");
+		formData.append('articleId',parseInt(id));
+		$.ajax({
+			type: 'POST',
+			url: '/Articlemanage',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+			success: function(data){
+				console.log(data);
+				$(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" onClick="article_publish(this,'+id+')" href="javascript:;" title="发布"><i class="Hui-iconfont">&#xe603;</i></a>');
+				$(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius">未发布</span>');
+				$(obj).remove();
+				layer.msg('已下架!',{icon: 5,time:1000});
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});	
+	});
+}
+function article_publish(obj,id)
+{
+	layer.confirm('确认要发布吗？',function(index){
+		var formData = new FormData();
+		formData.append('operateType',"publish");
+		formData.append('articleId',parseInt(id));
+		$.ajax({
+			type: 'POST',
+			url: '/Articlemanage',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+			success: function(data){
+				console.log(data);
+				$(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" onClick="article_unPublish(this,'+id+')" href="javascript:;" title="下架"><i class="Hui-iconfont">&#xe6de;</i></a>');
+				$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已发布</span>');
+				$(obj).remove();
+				layer.msg('已发布!',{icon: 1,time:1000});
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});	
+	});
+}
+/*资讯-发布*/
+function article_start(obj,id){
+	layer.confirm('确认要发布吗？',function(index){
+		$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">待审核</span>');
+		$(obj).parents("tr").find(".td-manage").html("");
+		var formData = new FormData();
+		formData.append('operateType',"submitCheck");
+		formData.append('articleId',parseInt(id));
+		$.ajax({
+			type: 'POST',
+			url: '/Articlemanage',
+			data: formData,
+			//这两个设置项必填
+			contentType: false,
+			processData: false,
+			success: function(data){
+				console.log(data);
+				//$(obj).parents("tr").remove();
+				layer.msg('已提交审核!',{icon:1,time:1000});
+			},
+			error:function(data) {
+				console.log(data.msg);
+			},
+		});	
+
+		layer.msg('已发布!',{icon: 6,time:1000});
+	});
+}
+/*资讯-申请上线*/
+function article_shenqing(obj,id){
+	$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">待审核</span>');
+	$(obj).parents("tr").find(".td-manage").html("");
+	layer.msg('已提交申请，耐心等待审核!', {icon: 1,time:2000});
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

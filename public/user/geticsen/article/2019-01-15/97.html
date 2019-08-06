@@ -1,0 +1,101 @@
+<p>
+	<img width="100%" src="https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=7d9caef42234349b74066983f1d172f3/80cb39dbb6fd526688a773faa118972bd507364b.jpg" alt="" />
+</p>
+<p>
+	<span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">百科介绍：Bootstrap是美国</span><a target="_blank" href="https://baike.baidu.com/item/Twitter/2443267">Twitter</a><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">公司的设计师Mark Otto和Jacob Thornton合作基于HTML、CSS、</span><a target="_blank" href="https://baike.baidu.com/item/JavaScript/321142">JavaScript</a><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">&nbsp;开发的简洁、直观、强悍的</span><a target="_blank" href="https://baike.baidu.com/item/%E5%89%8D%E7%AB%AF/5956545">前端</a><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">开发框架，使得 Web 开发更加快捷。</span><span class="sup--normal" style="font-size:10.5px;line-height:0;vertical-align:baseline;color:#3366CC;font-family:arial, 宋体, sans-serif;background-color:#FFFFFF;">&nbsp;[1]</span><a name="undefined"></a>&nbsp;<span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">&nbsp;Bootstrap提供了优雅的HTML和CSS规范，它即是由动态CSS语言</span><a target="_blank" href="https://baike.baidu.com/item/Less">Less</a><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">写成。Bootstrap一经推出后颇受欢迎，一直是</span><a target="_blank" href="https://baike.baidu.com/item/GitHub">GitHub</a><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">上的热门开源项目，包括</span><a target="_blank" href="https://baike.baidu.com/item/NASA">NASA</a><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">的MSNBC（微软全国广播公司）的Breaking News都使用了该项目。</span><span class="sup--normal" style="font-size:10.5px;line-height:0;vertical-align:baseline;color:#3366CC;font-family:arial, 宋体, sans-serif;background-color:#FFFFFF;">&nbsp;[2]</span><a name="undefined"></a>&nbsp;<span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">&nbsp;国内一些移动开发者较为熟悉的框架，如</span><a target="_blank" href="https://baike.baidu.com/item/WeX5">WeX5</a><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">前端开源框架等，也是基于Bootstrap源码进行性能优化而来。</span>
+</p>
+<p>
+	<span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;"><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">Bootst</span><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">rap是优秀的前端框架，我学了一个星期了，<span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">Bootst</span><span style="color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;background-color:#FFFFFF;">rap非常适合做响应式布局，不用你辛辛苦苦的考虑布局问题，也不用手机端还有电脑端分开写了，这从开发上着实省时省力下面这个案例就是实现了顶部导航，还有底部导航。</span></span></span>
+</p>
+<p>
+	<span style="background-color:#FFFFFF;color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;">代码如下：</span>
+</p>
+<p>
+	<span style="background-color:#FFFFFF;color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;">
+<pre class="prettyprint lang-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;响应式导航条&lt;/title&gt;
+	&lt;meta http-equiv="X-UA-Compatible"  content="IE=edge"/&gt;
+	&lt;meta name="viewport" content="width=device-width,initial-scale=1"/&gt;
+	&lt;link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"&gt;
+	&lt;script src="bootstrap/js/jquery-2.1.1.min.js"&gt;&lt;/script&gt;
+	&lt;!--[if lt IE 9]&gt;
+			 &lt;script src="http://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"/&gt;                
+			 &lt;script src="http://oss.maxcdn.com/respond/1.4.2/respond.min.js"/&gt;                
+			 &lt;script src=""/&gt;                
+	&lt;![endif]--&gt;
+    &lt;style&gt;
+        body{ 
+			position:relative;
+			margin-bottom: 60px;
+		}
+		.navbar-nav li{
+			margin-left:30px;
+		}
+		html {
+			position: relative;
+			min-height: 100%;
+		}
+		
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;nav class="nav navbar-inverse navbar-fixed-top"&gt;
+	 &lt;div class="container"&gt;
+        &lt;div class="navbar-header"&gt;
+            &lt;!--在移动端的时候导航条折叠起来，三横的样式出现，点击该样式可以显示或隐藏导航条上的内容--&gt;
+            &lt;button class="navbar-toggle" data-toggle="collapse" data-target="#menu"&gt;
+                &lt;span class="icon-bar"&gt;&lt;/span&gt;
+                &lt;span class="icon-bar"&gt;&lt;/span&gt;
+                &lt;span class="icon-bar"&gt;&lt;/span&gt;
+            &lt;/button&gt;
+            &lt;a href="#" class="navbar-brand"&gt;logo&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div id="menu" class="collapse navbar-collapse"&gt;
+            &lt;ul class="nav navbar-nav"&gt;
+                &lt;li &gt;&lt;a href="#"&gt;one&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;two&lt;/a&gt;&lt;/li&gt;
+                &lt;!--下拉菜单功能的实现--&gt;
+                &lt;li class="dropdown"&gt;&lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;
+                    three&lt;span class="caret"&gt;&lt;/span&gt;&lt;/a&gt;
+                &lt;ul class="dropdown-menu"&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;first&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#"&gt;second&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;/li&gt;
+				
+            &lt;/ul&gt;
+        &lt;/div&gt;
+	 &lt;/div&gt;
+	&lt;/nav&gt;
+	&lt;footer class="nav navbar-inverse navbar-fixed-bottom"&gt;
+      &lt;div class="container"&gt;
+		&lt;div class="row"&gt;
+			&lt;div class="col-sm-3"&gt;
+				&lt;a href="#"&gt;寻找了解&lt;/a&gt;
+			&lt;/div&gt;
+			&lt;div class="col-sm-3"&gt;
+				&lt;a href="#"&gt;寻找了解&lt;/a&gt;
+			&lt;/div&gt;
+			&lt;div class="col-sm-3"&gt;
+				&lt;a href="#"&gt;寻找了解&lt;/a&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	  &lt;/div&gt;
+    &lt;/footer&gt;
+&lt;script src="bootstrap/js/bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</span>
+</p>
+<p>
+	<span style="background-color:#FFFFFF;color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;"></span><span style="background-color:#FFFFFF;color:#333333;font-family:arial, 宋体, sans-serif;font-size:14px;">好了以后还有跟多时间学习，现在也只是了解一下怎么用了，其内部机制并没有去了解。</span>
+</p>
+<p>
+	<br />
+</p>
+<p>
+	<br />
+</p>
